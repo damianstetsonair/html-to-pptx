@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Review Presentation</title>
+<style>* { box-sizing: border-box; margin: 0; padding: 0; }body { background: #1a1a1a; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; }.slide { width: 960px; height: 540px; position: relative; overflow: hidden; margin: 20px auto; box-shadow: 0 8px 32px rgba(0,0,0,0.4); border-radius: 8px; background: #ffffff; }.top-bar { position: absolute; top: 0; left: 0; right: 0; height: 8px; background: #7a9a9e; }.date-box { position: absolute; top: 8px; right: 0; width: 100px; height: 50px; background: #7a9a9e; display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 14px; font-weight: 600; text-align: center; line-height: 1.2; }.main-title { position: absolute; top: 20px; left: 30px; font-size: 42px; font-weight: 700; color: #006272; }.section-title { font-size: 13px; font-weight: 700; color: #006272; text-transform: uppercase; margin-bottom: 8px; }.section-box { border: 1px solid #ccc; border-top: none; padding: 10px 12px; background: #fff; }.section-header { border-top: 1px solid #ccc; padding-top: 2px; }.bullet-item { font-size: 11px; color: #333; margin-bottom: 4px; display: flex; align-items: flex-start; }.bullet-item::before { content: "\25AA"; color: #c00; margin-right: 6px; font-size: 10px; }.footer-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 32px; background: #c41e3a; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }.page-number { color: #fff; font-size: 14px; font-weight: 500; }.logo { color: #fff; font-size: 18px; font-weight: 700; letter-spacing: 2px; }.trend-box { display: flex; gap: 30px; }.trend-item { font-size: 14px; font-weight: 600; color: #333; }.budget-label { font-size: 12px; font-weight: 700; color: #333; margin-bottom: 6px; }.link-text { color: #006272; font-size: 12px; text-decoration: underline; cursor: pointer; }.planning-instruction { font-size: 12px; color: #333; margin-top: 5px; }.workload-table { width: 100%; border-collapse: collapse; }.workload-table th, .workload-table td { border: 1px dashed #ccc; padding: 6px 8px; text-align: center; font-size: 11px; }.workload-table th { background: #fff; font-weight: 400; color: #333; }.row-label { text-align: left; font-weight: 400; color: #333; }</style>
+</head>
+<body>
+
+<!-- SUMMARY SLIDE -->
+<div class="slide" data-slide-number="0" data-project-index="summary" data-project-name="Portfolio Summary">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 36px;">Portfolio Overview</div>
+<div style="position: absolute; top: 75px; left: 30px; width: 900px;">
+<table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+<thead>
+<tr style="background: #006272; color: white;">
+<th style="padding: 8px; text-align: left; border: 1px solid #ccc;">Project Name</th>
+<th style="padding: 8px; text-align: center; border: 1px solid #ccc; width: 80px;">Status</th>
+<th style="padding: 8px; text-align: center; border: 1px solid #ccc; width: 60px;">Mood</th>
+<th style="padding: 8px; text-align: center; border: 1px solid #ccc; width: 60px;">Risk</th>
+<th style="padding: 8px; text-align: center; border: 1px solid #ccc; width: 70px;">Progress</th>
+<th style="padding: 8px; text-align: left; border: 1px solid #ccc;">Program</th>
+</tr>
+</thead>
+<tbody>
+<tr style="background: #f9f9f9;">
+<td style="padding: 6px 8px; border: 1px solid #ccc; overflow: hidden; max-width: 200px; word-wrap: break-word;">Mise en place d'un outil de com' inApp</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;">Finished</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;">-</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#22c55e;"></span></td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;">66%</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc;">Industrialiser nos process</td>
+</tr>
+<tr>
+<td style="padding: 6px 8px; border: 1px solid #ccc; overflow: hidden; max-width: 200px; word-wrap: break-word;">Remplacement du système de paiement</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;">Solution Chosen</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;"><span style="color:#f59e0b;">&#9679;</span></td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#ef4444;"></span></td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;">56%</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc;">Industrialiser nos process</td>
+</tr>
+<tr style="background: #f9f9f9;">
+<td style="padding: 6px 8px; border: 1px solid #ccc; overflow: hidden; max-width: 200px; word-wrap: break-word;">Lancement du marché Espagnol</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;">Ongoing Sourcing</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;"><span style="color:#ef4444;">&#9679;</span></td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f59e0b;"></span></td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;">54%</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc;">Programme Gamma</td>
+</tr>
+<tr>
+<td style="padding: 6px 8px; border: 1px solid #ccc; overflow: hidden; max-width: 200px; word-wrap: break-word;">Management de la gestion des stocks</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;">In Progress</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;"><span style="color:#22c55e;">&#9679;</span></td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f59e0b;"></span></td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;">0%</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc;">Programme Gamma</td>
+</tr>
+<tr style="background: #f9f9f9;">
+<td style="padding: 6px 8px; border: 1px solid #ccc; overflow: hidden; max-width: 200px; word-wrap: break-word;">Ticket restau dématérialisés</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;">Arbitrage</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;">-</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#22c55e;"></span></td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;">10%</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc;">Programme performance 2024</td>
+</tr>
+<tr>
+<td style="padding: 6px 8px; border: 1px solid #ccc; overflow: hidden; max-width: 200px; word-wrap: break-word;">Industrialisation de nos KPI métier</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;">Solution Chosen</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;"><span style="color:#f59e0b;">&#9679;</span></td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f59e0b;"></span></td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;">53%</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc;">Programme performance 2024</td>
+</tr>
+<tr style="background: #f9f9f9;">
+<td style="padding: 6px 8px; border: 1px solid #ccc; overflow: hidden; max-width: 200px; word-wrap: break-word;">Nouveau plan de compétence</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;">Solution Chosen</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;"><span style="color:#22c55e;">&#9679;</span></td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f59e0b;"></span></td>
+<td style="padding: 6px 8px; border: 1px solid #ccc; text-align: center;">53%</td>
+<td style="padding: 6px 8px; border: 1px solid #ccc;">Programme performance 2024</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div style="position: absolute; bottom: 50px; left: 30px; font-size: 11px; color: #666;">
+<strong>Legend:</strong> Mood: <span style="color:#22c55e;">&#9679;</span> Good <span style="color:#f59e0b;">&#9679;</span> Complicated <span style="color:#ef4444;">&#9679;</span> Blocked | Risk: <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#22c55e;"></span> Low <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f59e0b;"></span> Medium <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#ef4444;"></span> High
+</div>
+<div class="footer-bar"><span class="page-number">Summary</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<!-- PROJECT 1: Mise en place d'un outil de com' inApp -->
+<div class="slide" data-slide-number="1" data-project-index="0" data-project-name="Mise en place d'un outil de com' inApp vers nos utilisateurs">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 28px; max-width: 800px; overflow: hidden;">Project review : Com' inApp</div>
+<div style="position: absolute; top: 80px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">DESCRIPTION & EXPECTED BENEFITS</div></div>
+<div class="section-box" style="height: 70px; overflow: hidden;">
+<div class="bullet-item" style="word-wrap: break-word;">Améliorer la connaissance des fonctionnalités plateforme pour augmenter l'engagement utilisateur.</div>
+</div>
+</div>
+<div style="position: absolute; top: 175px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">SCOPE & MILESTONES</div></div>
+<div class="section-box" style="height: 85px;">
+<div class="bullet-item">Deployment area: Direction generale</div>
+<div class="bullet-item">Progress: 66% complete</div>
+<div class="bullet-item">End users: Platform users</div>
+<div class="bullet-item">Timeline: Aug 2024 - Oct 2024</div>
+</div>
+</div>
+<div style="position: absolute; top: 285px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">PROGRESS</div></div>
+<div class="section-box" style="height: 80px;">
+<div class="bullet-item">Status: Finished</div>
+<div class="bullet-item">Milestone progress: 0%</div>
+<div class="bullet-item">Goal: Améliorer l'engagement des clients</div>
+</div>
+</div>
+<div style="position: absolute; top: 390px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">NEXT STEPS</div></div>
+<div class="section-box" style="height: 85px;">
+<div class="bullet-item">Project completed - monitoring phase</div>
+<div class="bullet-item">Evaluate user engagement metrics</div>
+<div class="bullet-item">Plan potential enhancements</div>
+</div>
+</div>
+<div style="position: absolute; top: 80px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">DECISIONS</div></div>
+<div class="section-box" style="height: 115px; overflow: hidden;">
+<div class="budget-label">Made :</div>
+<div class="bullet-item" style="font-size: 10px;">Va-t-on plus loin sur ce POC ? - Study phase</div>
+<div class="bullet-item" style="font-size: 10px;">Go / no go ? - Must have decision pending</div>
+</div>
+</div>
+<div style="position: absolute; top: 220px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">RISKS & STATUS</div></div>
+<div class="section-box" style="height: 100px;">
+<div class="bullet-item">Risk Level: <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#22c55e;"></span> Low</div>
+<div class="bullet-item">Importance: Life Changing</div>
+<div class="bullet-item">Owner: Magalie AirSaas (PMO)</div>
+</div>
+</div>
+<div style="position: absolute; top: 345px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">TRENDS</div></div>
+<div class="section-box" style="height: 40px; display: flex; align-items: center;">
+<div class="trend-box">
+<div class="trend-item">Scope &#9650;</div>
+<div class="trend-item">Schedule &#9650;</div>
+<div class="trend-item">Budget &#9650;</div>
+</div>
+</div>
+</div>
+<div style="position: absolute; top: 410px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">BUDGET</div></div>
+<div class="section-box" style="height: 70px;">
+<div class="budget-label">Build</div>
+<div class="bullet-item">BAC : 500 K&#8364; (Dev, Integration, hosting, maintenance, support)</div>
+<div class="bullet-item">Actual : 245 K&#8364;</div>
+<div class="bullet-item">EAC : 245 K&#8364;</div>
+</div>
+</div>
+<div class="footer-bar"><span class="page-number">1</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<div class="slide" data-slide-number="2" data-project-index="0" data-project-name="Mise en place d'un outil de com' inApp vers nos utilisateurs">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 28px;">Project review: Com' inApp</div>
+<div style="position: absolute; top: 90px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">BUDGET DETAILS</div></div>
+<div class="section-box" style="height: 120px;">
+<table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+<tr style="background: #f5f5f5;">
+<th style="padding: 6px; border: 1px solid #ccc; text-align: left;">Type</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Initial</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Planned</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Consumed</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Landing</th>
+</tr>
+<tr>
+<td style="padding: 6px; border: 1px solid #ccc;">CAPEX (FY2025)</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">500 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">500 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">245 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">245 K&#8364;</td>
+</tr>
+<tr>
+<td style="padding: 6px; border: 1px solid #ccc;">OPEX (FY2025)</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">1,240 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">1,240 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">0 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">0 K&#8364;</td>
+</tr>
+</table>
+</div>
+</div>
+<div style="position: absolute; top: 240px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">PROJECT TEAM</div></div>
+<div class="section-box" style="height: 80px;">
+<div class="bullet-item"><strong>Product Owner:</strong> Magalie AirSaas (PMO)</div>
+<div class="bullet-item"><strong>Sponsor:</strong> bertran ruiz (DG)</div>
+<div class="bullet-item"><strong>PMO:</strong> Marisella Pacheco (Responsable Produit Design)</div>
+</div>
+</div>
+<div style="position: absolute; bottom: 60px; left: 30px;">
+<a class="link-text" href="#">See the link: Followup budget file</a>
+</div>
+<div class="footer-bar"><span class="page-number">2</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<div class="slide" data-slide-number="3" data-project-index="0" data-project-name="Mise en place d'un outil de com' inApp vers nos utilisateurs">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 28px;">Com' inApp - Planning</div>
+<div style="position: absolute; top: 75px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">PLANNING</div></div>
+<div class="section-box" style="height: 280px; overflow: hidden;">
+<div style="font-size: 11px; color: #333; margin-bottom: 10px;"><strong>Project Timeline:</strong> Aug 1, 2024 - Oct 16, 2024</div>
+<div style="margin-top: 10px;">
+<div style="background: #e5e5e5; height: 20px; border-radius: 4px; position: relative; margin-bottom: 15px;">
+<div style="background: #006272; height: 20px; border-radius: 4px; width: 66%;"></div>
+<span style="position: absolute; right: 10px; top: 2px; font-size: 11px; color: #333;">66% Complete</span>
+</div>
+</div>
+<div style="font-size: 11px; margin-top: 15px;">
+<strong>Key Milestones:</strong>
+<ul style="margin-left: 20px; margin-top: 5px;">
+<li>1er quarter plan sur le périmètre choisi - In Progress (40%)</li>
+<li>Acheter les licenses - In Progress (7%)</li>
+<li>Ajustements post-pilote - To Do</li>
+</ul>
+</div>
+<div style="font-size: 11px; margin-top: 15px;">
+<strong>Program:</strong> Industrialiser nos process par des méthodes et des outils
+</div>
+</div>
+</div>
+<div style="position: absolute; top: 380px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">TEAM WORKLOAD IN M/D</div></div>
+<div style="border: 1px solid #ccc; border-top: none;">
+<table class="workload-table" style="width: 100%;">
+<thead>
+<tr>
+<th style="width: 80px;"></th>
+<th>Projet/Offre</th>
+<th>IT Sécu</th>
+<th>IT Infra</th>
+<th>Transfo</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="row-label">Budget (m/d)</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td class="row-label">Used (m/d)</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td class="row-label">To do (m/d)</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="footer-bar"><span class="page-number">3</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<!-- PROJECT 2: Remplacement du système de paiement -->
+<div class="slide" data-slide-number="1" data-project-index="1" data-project-name="Remplacement du système de paiement">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 28px; max-width: 800px;">Project review : Système de paiement</div>
+<div style="position: absolute; top: 80px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">DESCRIPTION & EXPECTED BENEFITS</div></div>
+<div class="section-box" style="height: 70px; overflow: hidden;">
+<div class="bullet-item" style="word-wrap: break-word; font-size: 10px;">Remplacer l'outil historique coûteux par une solution moderne avec données analytiques sur les transactions.</div>
+</div>
+</div>
+<div style="position: absolute; top: 175px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">SCOPE & MILESTONES</div></div>
+<div class="section-box" style="height: 85px;">
+<div class="bullet-item">Deployment area: DSI</div>
+<div class="bullet-item">Milestone progress: 55%</div>
+<div class="bullet-item">End users: All departments</div>
+<div class="bullet-item">Timeline: May 2022 - Sep 2026</div>
+</div>
+</div>
+<div style="position: absolute; top: 285px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">PROGRESS</div></div>
+<div class="section-box" style="height: 80px;">
+<div class="bullet-item">Status: Solution Chosen</div>
+<div class="bullet-item">Overall progress: 56%</div>
+<div class="bullet-item">Effort: 206 m/d planned, 15 m/d used</div>
+</div>
+</div>
+<div style="position: absolute; top: 390px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">NEXT STEPS</div></div>
+<div class="section-box" style="height: 85px;">
+<div class="bullet-item">Complete Mollie integration setup</div>
+<div class="bullet-item">Finalize data migration plan</div>
+<div class="bullet-item">User acceptance testing</div>
+</div>
+</div>
+<div style="position: absolute; top: 80px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">DECISIONS</div></div>
+<div class="section-box" style="height: 115px; overflow: hidden;">
+<div class="budget-label">Made :</div>
+<div class="bullet-item" style="font-size: 10px;">Avancer le lancement de 1 mois - Under study</div>
+<div class="bullet-item" style="font-size: 10px;">Decision maker: Dominique Rocheteau</div>
+</div>
+</div>
+<div style="position: absolute; top: 220px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">RISKS & STATUS</div></div>
+<div class="section-box" style="height: 100px; overflow: hidden;">
+<div class="bullet-item">Risk Level: <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#ef4444;"></span> High</div>
+<div class="bullet-item" style="font-size: 10px;">Risque d'arrêt de fonctionnement du service - API change imminent</div>
+<div class="bullet-item" style="font-size: 10px;">Alerte équipes DATA - audit timing issue</div>
+</div>
+</div>
+<div style="position: absolute; top: 345px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">TRENDS</div></div>
+<div class="section-box" style="height: 40px; display: flex; align-items: center;">
+<div class="trend-box">
+<div class="trend-item">Scope &#9660;</div>
+<div class="trend-item">Schedule &#9660;</div>
+<div class="trend-item">Budget &#9660;</div>
+</div>
+</div>
+</div>
+<div style="position: absolute; top: 410px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">BUDGET</div></div>
+<div class="section-box" style="height: 70px;">
+<div class="budget-label">Build</div>
+<div class="bullet-item">BAC : 78 K&#8364; (Dev, Integration, hosting, maintenance, support)</div>
+<div class="bullet-item">Actual : 15 K&#8364;</div>
+<div class="bullet-item">EAC : 68 K&#8364;</div>
+</div>
+</div>
+<div class="footer-bar"><span class="page-number">4</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<div class="slide" data-slide-number="2" data-project-index="1" data-project-name="Remplacement du système de paiement">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 28px;">Project review: Système de paiement</div>
+<div style="position: absolute; top: 90px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">BUDGET DETAILS</div></div>
+<div class="section-box" style="height: 150px;">
+<table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+<tr style="background: #f5f5f5;">
+<th style="padding: 6px; border: 1px solid #ccc; text-align: left;">Budget Line</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Planned</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Consumed</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Landing</th>
+</tr>
+<tr>
+<td style="padding: 6px; border: 1px solid #ccc;">Set up Mollie</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">57 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">10 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">48 K&#8364;</td>
+</tr>
+<tr>
+<td style="padding: 6px; border: 1px solid #ccc;">Licences Mollie</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">30 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">10 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">30 K&#8364;</td>
+</tr>
+<tr>
+<td style="padding: 6px; border: 1px solid #ccc;">Etude de faisabilité</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">21 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">5 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">20 K&#8364;</td>
+</tr>
+</table>
+</div>
+</div>
+<div style="position: absolute; top: 270px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">PROJECT TEAM</div></div>
+<div class="section-box" style="height: 80px;">
+<div class="bullet-item"><strong>Owner:</strong> Maxime Exterisa (Chef de projet transverse)</div>
+<div class="bullet-item"><strong>Sponsor:</strong> bertran ruiz (DG)</div>
+<div class="bullet-item"><strong>PMO:</strong> Emilie Delpante (PMO DSI)</div>
+</div>
+</div>
+<div style="position: absolute; bottom: 60px; left: 30px;">
+<a class="link-text" href="#">See the link: Followup budget file</a>
+</div>
+<div class="footer-bar"><span class="page-number">5</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<div class="slide" data-slide-number="3" data-project-index="1" data-project-name="Remplacement du système de paiement">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 28px;">Système de paiement - Planning</div>
+<div style="position: absolute; top: 75px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">PLANNING</div></div>
+<div class="section-box" style="height: 280px; overflow: hidden;">
+<div style="font-size: 11px; color: #333; margin-bottom: 10px;"><strong>Project Timeline:</strong> May 2, 2022 - Sep 30, 2026</div>
+<div style="margin-top: 10px;">
+<div style="background: #e5e5e5; height: 20px; border-radius: 4px; position: relative; margin-bottom: 15px;">
+<div style="background: #006272; height: 20px; border-radius: 4px; width: 56%;"></div>
+<span style="position: absolute; right: 10px; top: 2px; font-size: 11px; color: #333;">56% Complete</span>
+</div>
+</div>
+<div style="font-size: 11px; margin-top: 15px;">
+<strong>Key Milestones:</strong>
+<ul style="margin-left: 20px; margin-top: 5px;">
+<li>1er quarter plan sur le périmètre choisi - In Progress (40%)</li>
+<li>Acheter les licenses - In Progress (7%)</li>
+<li>Ajustements post-pilote - To Do</li>
+</ul>
+</div>
+<div style="font-size: 11px; margin-top: 15px;">
+<strong>Expected Benefits:</strong> Diminution des coûts de transaction de 10%, fluidité UX, nouveau contrat
+</div>
+</div>
+</div>
+<div style="position: absolute; top: 380px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">TEAM WORKLOAD IN M/D</div></div>
+<div style="border: 1px solid #ccc; border-top: none;">
+<table class="workload-table" style="width: 100%;">
+<thead>
+<tr>
+<th style="width: 80px;"></th>
+<th>Services gén.</th>
+<th>Dir. Opé.</th>
+<th>Maintenance</th>
+<th>IT DATA</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="row-label">Budget (m/d)</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>206</td>
+</tr>
+<tr>
+<td class="row-label">Used (m/d)</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>15</td>
+</tr>
+<tr>
+<td class="row-label">To do (m/d)</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>191</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="footer-bar"><span class="page-number">6</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<!-- PROJECT 3: Lancement du marché Espagnol -->
+<div class="slide" data-slide-number="1" data-project-index="2" data-project-name="Lancement du marché Espagnol">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 32px;">Project review : Marché Espagnol</div>
+<div style="position: absolute; top: 80px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">DESCRIPTION & EXPECTED BENEFITS</div></div>
+<div class="section-box" style="height: 70px; overflow: hidden;">
+<div class="bullet-item" style="word-wrap: break-word; font-size: 10px;">Expansion vers l'Espagne pour diversifier les revenus et renforcer la présence internationale.</div>
+</div>
+</div>
+<div style="position: absolute; top: 175px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">SCOPE & MILESTONES</div></div>
+<div class="section-box" style="height: 85px;">
+<div class="bullet-item">Deployment area: Direction generale</div>
+<div class="bullet-item">Milestone progress: 66%</div>
+<div class="bullet-item">End users: Spanish market</div>
+<div class="bullet-item">Timeline: Jan 2025 - Dec 2025</div>
+</div>
+</div>
+<div style="position: absolute; top: 285px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">PROGRESS</div></div>
+<div class="section-box" style="height: 80px;">
+<div class="bullet-item">Status: Ongoing Sourcing</div>
+<div class="bullet-item">Overall progress: 54%</div>
+<div class="bullet-item">Effort: 148 m/d planned</div>
+</div>
+</div>
+<div style="position: absolute; top: 390px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">NEXT STEPS</div></div>
+<div class="section-box" style="height: 85px;">
+<div class="bullet-item">Identify key local partners</div>
+<div class="bullet-item">Structure commercial offer</div>
+<div class="bullet-item">Adapt product for Spanish market</div>
+</div>
+</div>
+<div style="position: absolute; top: 80px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">DECISIONS</div></div>
+<div class="section-box" style="height: 115px; overflow: hidden;">
+<div class="budget-label">Made :</div>
+<div class="bullet-item" style="font-size: 10px;">Go / no go ? - Must have, deadline Jan 31, 2026</div>
+<div class="bullet-item" style="font-size: 10px;">Decision maker: bertran ruiz (DG)</div>
+</div>
+</div>
+<div style="position: absolute; top: 220px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">RISKS & STATUS</div></div>
+<div class="section-box" style="height: 100px;">
+<div class="bullet-item">Risk Level: <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f59e0b;"></span> Medium</div>
+<div class="bullet-item">Mood: <span style="color:#ef4444;">&#9679;</span> Blocked</div>
+<div class="bullet-item">Owner: Simon Vacher (CPO)</div>
+</div>
+</div>
+<div style="position: absolute; top: 345px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">TRENDS</div></div>
+<div class="section-box" style="height: 40px; display: flex; align-items: center;">
+<div class="trend-box">
+<div class="trend-item">Scope -</div>
+<div class="trend-item">Schedule &#9660;</div>
+<div class="trend-item">Budget -</div>
+</div>
+</div>
+</div>
+<div style="position: absolute; top: 410px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">BUDGET</div></div>
+<div class="section-box" style="height: 70px;">
+<div class="budget-label">Build</div>
+<div class="bullet-item">BAC : 150 K&#8364; (Dev, Integration, hosting, maintenance, support)</div>
+<div class="bullet-item">Actual : - K&#8364;</div>
+<div class="bullet-item">EAC : - K&#8364;</div>
+</div>
+</div>
+<div class="footer-bar"><span class="page-number">7</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<div class="slide" data-slide-number="2" data-project-index="2" data-project-name="Lancement du marché Espagnol">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 32px;">Project review: Marché Espagnol</div>
+<div style="position: absolute; top: 90px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">BUDGET DETAILS</div></div>
+<div class="section-box" style="height: 120px;">
+<table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+<tr style="background: #f5f5f5;">
+<th style="padding: 6px; border: 1px solid #ccc; text-align: left;">Type</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Initial</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Planned</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Consumed</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Landing</th>
+</tr>
+<tr>
+<td style="padding: 6px; border: 1px solid #ccc;">CAPEX (FY2025)</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">150 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+</tr>
+<tr>
+<td style="padding: 6px; border: 1px solid #ccc;">OPEX (FY2025)</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">5 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">5 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+</tr>
+</table>
+</div>
+</div>
+<div style="position: absolute; top: 240px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">PROJECT TEAM</div></div>
+<div class="section-box" style="height: 100px;">
+<div class="bullet-item"><strong>Owner:</strong> Simon Vacher (CPO)</div>
+<div class="bullet-item"><strong>Sponsors:</strong> Arnold Bigair (PM), Matthieu Delanoë (CTO)</div>
+<div class="bullet-item"><strong>PMO:</strong> Emilie Delpante (PMO DSI)</div>
+<div class="bullet-item"><strong>Business Lead:</strong> bertran ruiz (DG)</div>
+</div>
+</div>
+<div style="position: absolute; bottom: 60px; left: 30px;">
+<a class="link-text" href="#">See the link: Followup budget file</a>
+</div>
+<div class="footer-bar"><span class="page-number">8</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<div class="slide" data-slide-number="3" data-project-index="2" data-project-name="Lancement du marché Espagnol">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 32px;">Marché Espagnol - Planning</div>
+<div style="position: absolute; top: 75px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">PLANNING</div></div>
+<div class="section-box" style="height: 280px; overflow: hidden;">
+<div style="font-size: 11px; color: #333; margin-bottom: 10px;"><strong>Project Timeline:</strong> Jan 2, 2025 - Dec 31, 2025</div>
+<div style="margin-top: 10px;">
+<div style="background: #e5e5e5; height: 20px; border-radius: 4px; position: relative; margin-bottom: 15px;">
+<div style="background: #006272; height: 20px; border-radius: 4px; width: 54%;"></div>
+<span style="position: absolute; right: 10px; top: 2px; font-size: 11px; color: #333;">54% Complete</span>
+</div>
+</div>
+<div style="font-size: 11px; margin-top: 15px;">
+<strong>Key Milestones:</strong>
+<ul style="margin-left: 20px; margin-top: 5px;">
+<li>1er quarter plan sur le périmètre choisi - In Progress (40%)</li>
+<li>Acheter les licenses - In Progress (7%)</li>
+<li>Ajustements post-pilote - To Do</li>
+</ul>
+</div>
+<div style="font-size: 11px; margin-top: 15px;">
+<strong>Program:</strong> Programme Gamma
+</div>
+</div>
+</div>
+<div style="position: absolute; top: 380px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">TEAM WORKLOAD IN M/D</div></div>
+<div style="border: 1px solid #ccc; border-top: none;">
+<table class="workload-table" style="width: 100%;">
+<thead>
+<tr>
+<th style="width: 80px;"></th>
+<th>Mkt-data</th>
+<th>Transfo</th>
+<th>Projet/Offre</th>
+<th>IT Sécu</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="row-label">Budget (m/d)</td>
+<td>30</td>
+<td>40</td>
+<td>60</td>
+<td>18</td>
+<td>148</td>
+</tr>
+<tr>
+<td class="row-label">Used (m/d)</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td class="row-label">To do (m/d)</td>
+<td>30</td>
+<td>40</td>
+<td>60</td>
+<td>18</td>
+<td>148</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="footer-bar"><span class="page-number">9</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<!-- PROJECT 4: Management de la gestion des stocks -->
+<div class="slide" data-slide-number="1" data-project-index="3" data-project-name="Management de la gestion des stocks">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 30px;">Project review : Gestion des stocks</div>
+<div style="position: absolute; top: 80px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">DESCRIPTION & EXPECTED BENEFITS</div></div>
+<div class="section-box" style="height: 70px; overflow: hidden;">
+<div class="bullet-item" style="word-wrap: break-word; font-size: 10px;">Remplacer l'outil obsolète par un SaaS moderne pour réduire la maintenance et les coûts de 20%.</div>
+</div>
+</div>
+<div style="position: absolute; top: 175px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">SCOPE & MILESTONES</div></div>
+<div class="section-box" style="height: 85px;">
+<div class="bullet-item">Deployment area: DSI</div>
+<div class="bullet-item">Milestone progress: 32%</div>
+<div class="bullet-item">End users: Inventory teams</div>
+<div class="bullet-item">Timeline: Mar 2024 - Jan 2025</div>
+</div>
+</div>
+<div style="position: absolute; top: 285px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">PROGRESS</div></div>
+<div class="section-box" style="height: 80px;">
+<div class="bullet-item">Status: In Progress</div>
+<div class="bullet-item">Overall progress: 0%</div>
+<div class="bullet-item">Effort: 200 m/d planned, 5 m/d used</div>
+</div>
+</div>
+<div style="position: absolute; top: 390px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">NEXT STEPS</div></div>
+<div class="section-box" style="height: 85px;">
+<div class="bullet-item">Complete SaaS vendor selection</div>
+<div class="bullet-item">Data migration planning</div>
+<div class="bullet-item">User training preparation</div>
+</div>
+</div>
+<div style="position: absolute; top: 80px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">DECISIONS</div></div>
+<div class="section-box" style="height: 115px; overflow: hidden;">
+<div class="budget-label">Made :</div>
+<div class="bullet-item" style="font-size: 10px;">Go / no go ? - Must have decision pending</div>
+<div class="bullet-item" style="font-size: 10px;">Decision maker: bertran ruiz (DG)</div>
+</div>
+</div>
+<div style="position: absolute; top: 220px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">RISKS & STATUS</div></div>
+<div class="section-box" style="height: 100px;">
+<div class="bullet-item">Risk Level: <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f59e0b;"></span> Medium</div>
+<div class="bullet-item">Mood: <span style="color:#22c55e;">&#9679;</span> Good</div>
+<div class="bullet-item">Owner: Alfred Matthieu (Tester)</div>
+</div>
+</div>
+<div style="position: absolute; top: 345px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">TRENDS</div></div>
+<div class="section-box" style="height: 40px; display: flex; align-items: center;">
+<div class="trend-box">
+<div class="trend-item">Scope -</div>
+<div class="trend-item">Schedule -</div>
+<div class="trend-item">Budget -</div>
+</div>
+</div>
+</div>
+<div style="position: absolute; top: 410px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">BUDGET</div></div>
+<div class="section-box" style="height: 70px;">
+<div class="budget-label">Build</div>
+<div class="bullet-item">BAC : - K&#8364; (Dev, Integration, hosting, maintenance, support)</div>
+<div class="bullet-item">Actual : - K&#8364;</div>
+<div class="bullet-item">EAC : - K&#8364;</div>
+</div>
+</div>
+<div class="footer-bar"><span class="page-number">10</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<div class="slide" data-slide-number="2" data-project-index="3" data-project-name="Management de la gestion des stocks">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 30px;">Project review: Gestion des stocks</div>
+<div style="position: absolute; top: 90px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">BUDGET DETAILS</div></div>
+<div class="section-box" style="height: 100px;">
+<table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+<tr style="background: #f5f5f5;">
+<th style="padding: 6px; border: 1px solid #ccc; text-align: left;">Type</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Initial</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Planned</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Consumed</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Landing</th>
+</tr>
+<tr>
+<td style="padding: 6px; border: 1px solid #ccc;">CAPEX</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+</tr>
+<tr>
+<td style="padding: 6px; border: 1px solid #ccc;">OPEX</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+</tr>
+</table>
+</div>
+</div>
+<div style="position: absolute; top: 220px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">PROJECT TEAM</div></div>
+<div class="section-box" style="height: 100px;">
+<div class="bullet-item"><strong>Owner:</strong> Alfred Matthieu (Tester)</div>
+<div class="bullet-item"><strong>Sponsor:</strong> Benedek Zsargó (Developer)</div>
+<div class="bullet-item"><strong>Business Leads:</strong> Alex Lamy (PM), Jérôme D. (Content Manager), Marisella Pacheco</div>
+</div>
+</div>
+<div style="position: absolute; bottom: 60px; left: 30px;">
+<a class="link-text" href="#">See the link: Followup budget file</a>
+</div>
+<div class="footer-bar"><span class="page-number">11</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<div class="slide" data-slide-number="3" data-project-index="3" data-project-name="Management de la gestion des stocks">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 30px;">Gestion des stocks - Planning</div>
+<div style="position: absolute; top: 75px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">PLANNING</div></div>
+<div class="section-box" style="height: 280px; overflow: hidden;">
+<div style="font-size: 11px; color: #333; margin-bottom: 10px;"><strong>Project Timeline:</strong> Mar 3, 2024 - Jan 10, 2025</div>
+<div style="margin-top: 10px;">
+<div style="background: #e5e5e5; height: 20px; border-radius: 4px; position: relative; margin-bottom: 15px;">
+<div style="background: #006272; height: 20px; border-radius: 4px; width: 0%;"></div>
+<span style="position: absolute; right: 10px; top: 2px; font-size: 11px; color: #333;">0% Complete</span>
+</div>
+</div>
+<div style="font-size: 11px; margin-top: 15px;">
+<strong>Key Milestones:</strong>
+<ul style="margin-left: 20px; margin-top: 5px;">
+<li>1er quarter plan sur le périmètre choisi - In Progress (40%)</li>
+<li>Acheter les licenses - In Progress (7%)</li>
+<li>Ajustements post-pilote - To Do</li>
+</ul>
+</div>
+<div style="font-size: 11px; margin-top: 15px;">
+<strong>Goals:</strong> Améliorer l'expérience utilisateur, Devenir data driven
+</div>
+</div>
+</div>
+<div style="position: absolute; top: 380px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">TEAM WORKLOAD IN M/D</div></div>
+<div style="border: 1px solid #ccc; border-top: none;">
+<table class="workload-table" style="width: 100%;">
+<thead>
+<tr>
+<th style="width: 80px;"></th>
+<th>Encaissement</th>
+<th>Transfo</th>
+<th>Mkt-data</th>
+<th>AirSaas</th>
+<th>IT DATA</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="row-label">Budget (m/d)</td>
+<td>40</td>
+<td>40</td>
+<td>20</td>
+<td>10</td>
+<td>10</td>
+<td>200</td>
+</tr>
+<tr>
+<td class="row-label">Used (m/d)</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>5</td>
+<td>-</td>
+<td>5</td>
+</tr>
+<tr>
+<td class="row-label">To do (m/d)</td>
+<td>40</td>
+<td>40</td>
+<td>20</td>
+<td>5</td>
+<td>10</td>
+<td>195</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="footer-bar"><span class="page-number">12</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<!-- PROJECT 5: Ticket restau dématérialisés -->
+<div class="slide" data-slide-number="1" data-project-index="4" data-project-name="Ticket restau dématérialisés">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 32px;">Project review : Ticket restau</div>
+<div style="position: absolute; top: 80px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">DESCRIPTION & EXPECTED BENEFITS</div></div>
+<div class="section-box" style="height: 70px; overflow: hidden;">
+<div class="bullet-item" style="word-wrap: break-word; font-size: 10px;">Système de tickets restaurants dématérialisés pour réduire les coûts et simplifier les processus.</div>
+</div>
+</div>
+<div style="position: absolute; top: 175px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">SCOPE & MILESTONES</div></div>
+<div class="section-box" style="height: 85px;">
+<div class="bullet-item">Deployment area: Direction generale</div>
+<div class="bullet-item">Milestone progress: 84%</div>
+<div class="bullet-item">End users: All employees</div>
+<div class="bullet-item">Timeline: Jun 2025 - Jul 2026</div>
+</div>
+</div>
+<div style="position: absolute; top: 285px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">PROGRESS</div></div>
+<div class="section-box" style="height: 80px;">
+<div class="bullet-item">Status: Arbitrage</div>
+<div class="bullet-item">Overall progress: 10%</div>
+<div class="bullet-item">Effort: 66 m/d planned, 6 m/d used</div>
+</div>
+</div>
+<div style="position: absolute; top: 390px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">NEXT STEPS</div></div>
+<div class="section-box" style="height: 85px;">
+<div class="bullet-item">Vendor selection finalization</div>
+<div class="bullet-item">Integration with HR systems</div>
+<div class="bullet-item">Employee communication plan</div>
+</div>
+</div>
+<div style="position: absolute; top: 80px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">DECISIONS</div></div>
+<div class="section-box" style="height: 115px; overflow: hidden;">
+<div class="budget-label">Made :</div>
+<div class="bullet-item" style="font-size: 10px;">Go / no go ? - Must have decision pending</div>
+<div class="bullet-item" style="font-size: 10px;">Decision maker: bertran ruiz (DG)</div>
+</div>
+</div>
+<div style="position: absolute; top: 220px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">RISKS & STATUS</div></div>
+<div class="section-box" style="height: 100px;">
+<div class="bullet-item">Risk Level: <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#22c55e;"></span> Low</div>
+<div class="bullet-item">Mood: -</div>
+<div class="bullet-item">Owner: Alex Lamy (PM)</div>
+</div>
+</div>
+<div style="position: absolute; top: 345px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">TRENDS</div></div>
+<div class="section-box" style="height: 40px; display: flex; align-items: center;">
+<div class="trend-box">
+<div class="trend-item">Scope -</div>
+<div class="trend-item">Schedule -</div>
+<div class="trend-item">Budget -</div>
+</div>
+</div>
+</div>
+<div style="position: absolute; top: 410px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">BUDGET</div></div>
+<div class="section-box" style="height: 70px;">
+<div class="budget-label">Build</div>
+<div class="bullet-item">BAC : 5 K&#8364; (Dev, Integration, hosting, maintenance, support)</div>
+<div class="bullet-item">Actual : 7.5 K&#8364;</div>
+<div class="bullet-item">EAC : - K&#8364;</div>
+</div>
+</div>
+<div class="footer-bar"><span class="page-number">13</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<div class="slide" data-slide-number="2" data-project-index="4" data-project-name="Ticket restau dématérialisés">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 32px;">Project review: Ticket restau</div>
+<div style="position: absolute; top: 90px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">BUDGET DETAILS</div></div>
+<div class="section-box" style="height: 100px;">
+<table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+<tr style="background: #f5f5f5;">
+<th style="padding: 6px; border: 1px solid #ccc; text-align: left;">Type</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Initial</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Planned</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Consumed</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Landing</th>
+</tr>
+<tr>
+<td style="padding: 6px; border: 1px solid #ccc;">CAPEX</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">5 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">7.5 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+</tr>
+<tr>
+<td style="padding: 6px; border: 1px solid #ccc;">OPEX</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">150 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+</tr>
+</table>
+</div>
+</div>
+<div style="position: absolute; top: 220px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">PROJECT TEAM</div></div>
+<div class="section-box" style="height: 80px;">
+<div class="bullet-item"><strong>Owner:</strong> Alex Lamy (PM)</div>
+<div class="bullet-item"><strong>Teams:</strong> Marketing - Offre, Marketing - data, Transfo et méthode, Maintenance</div>
+</div>
+</div>
+<div style="position: absolute; bottom: 60px; left: 30px;">
+<a class="link-text" href="#">See the link: Followup budget file</a>
+</div>
+<div class="footer-bar"><span class="page-number">14</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<div class="slide" data-slide-number="3" data-project-index="4" data-project-name="Ticket restau dématérialisés">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 32px;">Ticket restau - Planning</div>
+<div style="position: absolute; top: 75px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">PLANNING</div></div>
+<div class="section-box" style="height: 280px; overflow: hidden;">
+<div style="font-size: 11px; color: #333; margin-bottom: 10px;"><strong>Project Timeline:</strong> Jun 12, 2025 - Jul 9, 2026</div>
+<div style="margin-top: 10px;">
+<div style="background: #e5e5e5; height: 20px; border-radius: 4px; position: relative; margin-bottom: 15px;">
+<div style="background: #006272; height: 20px; border-radius: 4px; width: 10%;"></div>
+<span style="position: absolute; right: 10px; top: 2px; font-size: 11px; color: #333;">10% Complete</span>
+</div>
+</div>
+<div style="font-size: 11px; margin-top: 15px;">
+<strong>Key Milestones:</strong>
+<ul style="margin-left: 20px; margin-top: 5px;">
+<li>1er quarter plan sur le périmètre choisi - In Progress (40%)</li>
+<li>Acheter les licenses - In Progress (7%)</li>
+<li>Ajustements post-pilote - To Do</li>
+</ul>
+</div>
+<div style="font-size: 11px; margin-top: 15px;">
+<strong>Goals:</strong> Améliorer l'expérience utilisateur, Recruter 200 personnes
+</div>
+</div>
+</div>
+<div style="position: absolute; top: 380px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">TEAM WORKLOAD IN M/D</div></div>
+<div style="border: 1px solid #ccc; border-top: none;">
+<table class="workload-table" style="width: 100%;">
+<thead>
+<tr>
+<th style="width: 80px;"></th>
+<th>Mkt-data</th>
+<th>Maintenance</th>
+<th>Transfo</th>
+<th>Mkt-Offre</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="row-label">Budget (m/d)</td>
+<td>30</td>
+<td>21</td>
+<td>15</td>
+<td>-</td>
+<td>66</td>
+</tr>
+<tr>
+<td class="row-label">Used (m/d)</td>
+<td>0</td>
+<td>5</td>
+<td>1</td>
+<td>-</td>
+<td>6</td>
+</tr>
+<tr>
+<td class="row-label">To do (m/d)</td>
+<td>30</td>
+<td>16</td>
+<td>14</td>
+<td>-</td>
+<td>60</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="footer-bar"><span class="page-number">15</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<!-- PROJECT 6: Industrialisation de nos KPI métier -->
+<div class="slide" data-slide-number="1" data-project-index="5" data-project-name="Industrialisation de nos KPI métier">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 30px;">Project review : KPI métier</div>
+<div style="position: absolute; top: 80px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">DESCRIPTION & EXPECTED BENEFITS</div></div>
+<div class="section-box" style="height: 70px; overflow: hidden;">
+<div class="bullet-item" style="word-wrap: break-word; font-size: 10px;">Automatiser les métriques avec consolidation automatique pour un reporting cohérent et homogène.</div>
+</div>
+</div>
+<div style="position: absolute; top: 175px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">SCOPE & MILESTONES</div></div>
+<div class="section-box" style="height: 85px;">
+<div class="bullet-item">Deployment area: Transfo et méthode</div>
+<div class="bullet-item">Milestone progress: 14%</div>
+<div class="bullet-item">End users: All departments</div>
+<div class="bullet-item">Timeline: Apr 2025 - Mar 2026</div>
+</div>
+</div>
+<div style="position: absolute; top: 285px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">PROGRESS</div></div>
+<div class="section-box" style="height: 80px;">
+<div class="bullet-item">Status: Solution Chosen</div>
+<div class="bullet-item">Overall progress: 53%</div>
+<div class="bullet-item">Effort: 90 m/d planned, 40 m/d used</div>
+</div>
+</div>
+<div style="position: absolute; top: 390px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">NEXT STEPS</div></div>
+<div class="section-box" style="height: 85px;">
+<div class="bullet-item">Define common reference framework</div>
+<div class="bullet-item">Implement automated collection</div>
+<div class="bullet-item">Dashboard development</div>
+</div>
+</div>
+<div style="position: absolute; top: 80px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">DECISIONS</div></div>
+<div class="section-box" style="height: 115px; overflow: hidden;">
+<div class="budget-label">Made :</div>
+<div class="bullet-item" style="font-size: 10px;">Va-t-on plus loin sur ce POC ? - Under study</div>
+<div class="bullet-item" style="font-size: 10px;">Decision maker: bertran ruiz (DG)</div>
+</div>
+</div>
+<div style="position: absolute; top: 220px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">RISKS & STATUS</div></div>
+<div class="section-box" style="height: 100px;">
+<div class="bullet-item">Risk Level: <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f59e0b;"></span> Medium</div>
+<div class="bullet-item">Mood: <span style="color:#f59e0b;">&#9679;</span> Complicated</div>
+<div class="bullet-item">Owner: Matthieu Delanoë (CTO)</div>
+</div>
+</div>
+<div style="position: absolute; top: 345px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">TRENDS</div></div>
+<div class="section-box" style="height: 40px; display: flex; align-items: center;">
+<div class="trend-box">
+<div class="trend-item">Scope -</div>
+<div class="trend-item">Schedule &#9660;</div>
+<div class="trend-item">Budget &#9660;</div>
+</div>
+</div>
+</div>
+<div style="position: absolute; top: 410px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">BUDGET</div></div>
+<div class="section-box" style="height: 70px;">
+<div class="budget-label">Build</div>
+<div class="bullet-item">BAC : 75 K&#8364; (Dev, Integration, hosting, maintenance, support)</div>
+<div class="bullet-item">Actual : 50 K&#8364;</div>
+<div class="bullet-item">EAC : 77 K&#8364;</div>
+</div>
+</div>
+<div class="footer-bar"><span class="page-number">16</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<div class="slide" data-slide-number="2" data-project-index="5" data-project-name="Industrialisation de nos KPI métier">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 30px;">Project review: KPI métier</div>
+<div style="position: absolute; top: 90px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">BUDGET DETAILS</div></div>
+<div class="section-box" style="height: 120px;">
+<table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+<tr style="background: #f5f5f5;">
+<th style="padding: 6px; border: 1px solid #ccc; text-align: left;">Type</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Initial</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Planned</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Consumed</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Landing</th>
+</tr>
+<tr>
+<td style="padding: 6px; border: 1px solid #ccc;">CAPEX (FY2026)</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">75 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">75 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">50 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">77 K&#8364;</td>
+</tr>
+<tr>
+<td style="padding: 6px; border: 1px solid #ccc;">OPEX (FY2026)</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">12 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">12 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">10 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">10 K&#8364;</td>
+</tr>
+</table>
+</div>
+</div>
+<div style="position: absolute; top: 240px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">PROJECT TEAM</div></div>
+<div class="section-box" style="height: 100px;">
+<div class="bullet-item"><strong>Owner:</strong> Matthieu Delanoë (CTO)</div>
+<div class="bullet-item"><strong>Product Owners:</strong> sarah Thiebault, Simon Vacher, Thomas Poitau</div>
+<div class="bullet-item"><strong>PMO:</strong> Audrey Anselmoz</div>
+</div>
+</div>
+<div style="position: absolute; bottom: 60px; left: 30px;">
+<a class="link-text" href="#">See the link: Followup budget file</a>
+</div>
+<div class="footer-bar"><span class="page-number">17</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<div class="slide" data-slide-number="3" data-project-index="5" data-project-name="Industrialisation de nos KPI métier">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 30px;">KPI métier - Planning</div>
+<div style="position: absolute; top: 75px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">PLANNING</div></div>
+<div class="section-box" style="height: 280px; overflow: hidden;">
+<div style="font-size: 11px; color: #333; margin-bottom: 10px;"><strong>Project Timeline:</strong> Apr 1, 2025 - Mar 1, 2026</div>
+<div style="margin-top: 10px;">
+<div style="background: #e5e5e5; height: 20px; border-radius: 4px; position: relative; margin-bottom: 15px;">
+<div style="background: #006272; height: 20px; border-radius: 4px; width: 53%;"></div>
+<span style="position: absolute; right: 10px; top: 2px; font-size: 11px; color: #333;">53% Complete</span>
+</div>
+</div>
+<div style="font-size: 11px; margin-top: 15px;">
+<strong>Key Milestones:</strong>
+<ul style="margin-left: 20px; margin-top: 5px;">
+<li>1er quarter plan sur le périmètre choisi - In Progress (40%)</li>
+<li>Acheter les licenses - In Progress (7%)</li>
+<li>Ajustements post-pilote - To Do</li>
+</ul>
+</div>
+<div style="font-size: 11px; margin-top: 15px;">
+<strong>Goals:</strong> Réduire dépenses immo 40%, Améliorer UX interne, Devenir data driven
+</div>
+</div>
+</div>
+<div style="position: absolute; top: 380px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">TEAM WORKLOAD IN M/D</div></div>
+<div style="border: 1px solid #ccc; border-top: none;">
+<table class="workload-table" style="width: 100%;">
+<thead>
+<tr>
+<th style="width: 80px;"></th>
+<th>Mkt-Offre</th>
+<th>Maintenance</th>
+<th>Transfo</th>
+<th>IT Sécu</th>
+<th>IT Appli</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="row-label">Budget (m/d)</td>
+<td>10</td>
+<td>10</td>
+<td>10</td>
+<td>10</td>
+<td>50</td>
+<td>90</td>
+</tr>
+<tr>
+<td class="row-label">Used (m/d)</td>
+<td>2</td>
+<td>2</td>
+<td>1</td>
+<td>5</td>
+<td>30</td>
+<td>40</td>
+</tr>
+<tr>
+<td class="row-label">To do (m/d)</td>
+<td>8</td>
+<td>8</td>
+<td>9</td>
+<td>5</td>
+<td>20</td>
+<td>50</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="footer-bar"><span class="page-number">18</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<!-- PROJECT 7: Nouveau plan de compétence -->
+<div class="slide" data-slide-number="1" data-project-index="6" data-project-name="Nouveau plan de compétence">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 32px;">Project review : Plan compétence</div>
+<div style="position: absolute; top: 80px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">DESCRIPTION & EXPECTED BENEFITS</div></div>
+<div class="section-box" style="height: 70px; overflow: hidden;">
+<div class="bullet-item" style="word-wrap: break-word; font-size: 10px;">Améliorer le staffing RH et Marketing avec prise en compte des éléments financiers et simulations.</div>
+</div>
+</div>
+<div style="position: absolute; top: 175px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">SCOPE & MILESTONES</div></div>
+<div class="section-box" style="height: 85px;">
+<div class="bullet-item">Deployment area: Direction generale</div>
+<div class="bullet-item">Milestone progress: 38%</div>
+<div class="bullet-item">End users: RH, Marketing/Com</div>
+<div class="bullet-item">Timeline: Jan 2024 - Jan 2025</div>
+</div>
+</div>
+<div style="position: absolute; top: 285px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">PROGRESS</div></div>
+<div class="section-box" style="height: 80px;">
+<div class="bullet-item">Status: Solution Chosen</div>
+<div class="bullet-item">Overall progress: 53%</div>
+<div class="bullet-item">Effort: 30 m/d planned, 3 m/d used</div>
+</div>
+</div>
+<div style="position: absolute; top: 390px; left: 30px; width: 420px;">
+<div class="section-header"><div class="section-title">NEXT STEPS</div></div>
+<div class="section-box" style="height: 85px;">
+<div class="bullet-item">Finalize staffing module</div>
+<div class="bullet-item">Integration with financial systems</div>
+<div class="bullet-item">User training rollout</div>
+</div>
+</div>
+<div style="position: absolute; top: 80px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">DECISIONS</div></div>
+<div class="section-box" style="height: 115px; overflow: hidden;">
+<div class="budget-label">Made :</div>
+<div class="bullet-item" style="font-size: 10px;">Go / no go ? - Must have decision pending</div>
+<div class="bullet-item" style="font-size: 10px;">Decision maker: bertran ruiz (DG)</div>
+</div>
+</div>
+<div style="position: absolute; top: 220px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">RISKS & STATUS</div></div>
+<div class="section-box" style="height: 100px;">
+<div class="bullet-item">Risk Level: <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f59e0b;"></span> Medium</div>
+<div class="bullet-item">Mood: <span style="color:#22c55e;">&#9679;</span> Good</div>
+<div class="bullet-item">Owner: Emilie Delpante (PMO DSI)</div>
+</div>
+</div>
+<div style="position: absolute; top: 345px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">TRENDS</div></div>
+<div class="section-box" style="height: 40px; display: flex; align-items: center;">
+<div class="trend-box">
+<div class="trend-item">Scope &#9650;</div>
+<div class="trend-item">Schedule -</div>
+<div class="trend-item">Budget -</div>
+</div>
+</div>
+</div>
+<div style="position: absolute; top: 410px; left: 480px; width: 450px;">
+<div class="section-header"><div class="section-title">BUDGET</div></div>
+<div class="section-box" style="height: 70px;">
+<div class="budget-label">Build</div>
+<div class="bullet-item">BAC : 100 K&#8364; (Dev, Integration, hosting, maintenance, support)</div>
+<div class="bullet-item">Actual : 0.5 K&#8364;</div>
+<div class="bullet-item">EAC : - K&#8364;</div>
+</div>
+</div>
+<div class="footer-bar"><span class="page-number">19</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<div class="slide" data-slide-number="2" data-project-index="6" data-project-name="Nouveau plan de compétence">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 32px;">Project review: Plan compétence</div>
+<div style="position: absolute; top: 90px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">BUDGET DETAILS</div></div>
+<div class="section-box" style="height: 100px;">
+<table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+<tr style="background: #f5f5f5;">
+<th style="padding: 6px; border: 1px solid #ccc; text-align: left;">Type</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Initial</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Planned</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Consumed</th>
+<th style="padding: 6px; border: 1px solid #ccc;">Landing</th>
+</tr>
+<tr>
+<td style="padding: 6px; border: 1px solid #ccc;">CAPEX</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">100 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">0.5 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+</tr>
+<tr>
+<td style="padding: 6px; border: 1px solid #ccc;">OPEX</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">1.2 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">1 K&#8364;</td>
+<td style="padding: 6px; border: 1px solid #ccc; text-align: center;">-</td>
+</tr>
+</table>
+</div>
+</div>
+<div style="position: absolute; top: 220px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">PROJECT TEAM</div></div>
+<div class="section-box" style="height: 100px;">
+<div class="bullet-item"><strong>Owner:</strong> Emilie Delpante (PMO DSI)</div>
+<div class="bullet-item"><strong>Sponsors:</strong> Jean Claude La rue, Benedek Zsargó, Emilie Delpante</div>
+<div class="bullet-item"><strong>Business Leads:</strong> bertran ruiz (DG), Thomas Merlot (Production director)</div>
+</div>
+</div>
+<div style="position: absolute; bottom: 60px; left: 30px;">
+<a class="link-text" href="#">See the link: Followup budget file</a>
+</div>
+<div class="footer-bar"><span class="page-number">20</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<div class="slide" data-slide-number="3" data-project-index="6" data-project-name="Nouveau plan de compétence">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 32px;">Plan compétence - Planning</div>
+<div style="position: absolute; top: 75px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">PLANNING</div></div>
+<div class="section-box" style="height: 280px; overflow: hidden;">
+<div style="font-size: 11px; color: #333; margin-bottom: 10px;"><strong>Project Timeline:</strong> Jan 7, 2024 - Jan 10, 2025</div>
+<div style="margin-top: 10px;">
+<div style="background: #e5e5e5; height: 20px; border-radius: 4px; position: relative; margin-bottom: 15px;">
+<div style="background: #006272; height: 20px; border-radius: 4px; width: 53%;"></div>
+<span style="position: absolute; right: 10px; top: 2px; font-size: 11px; color: #333;">53% Complete</span>
+</div>
+</div>
+<div style="font-size: 11px; margin-top: 15px;">
+<strong>Key Milestones:</strong>
+<ul style="margin-left: 20px; margin-top: 5px;">
+<li>1er quarter plan sur le périmètre choisi - In Progress (40%)</li>
+<li>Acheter les licenses - In Progress (7%)</li>
+<li>Ajustements post-pilote - To Do</li>
+</ul>
+</div>
+<div style="font-size: 11px; margin-top: 15px;">
+<strong>Expected Benefits:</strong> Meilleure prise en compte staffing RH, meilleure ergonomie, autonomie métier
+</div>
+</div>
+</div>
+<div style="position: absolute; top: 380px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">TEAM WORKLOAD IN M/D</div></div>
+<div style="border: 1px solid #ccc; border-top: none;">
+<table class="workload-table" style="width: 100%;">
+<thead>
+<tr>
+<th style="width: 80px;"></th>
+<th>IT DATA</th>
+<th>AirSaas</th>
+<th>Maintenance</th>
+<th>IT Sécu</th>
+<th>IT Appli</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="row-label">Budget (m/d)</td>
+<td>-</td>
+<td>-</td>
+<td>20</td>
+<td>5</td>
+<td>5</td>
+<td>30</td>
+</tr>
+<tr>
+<td class="row-label">Used (m/d)</td>
+<td>-</td>
+<td>-</td>
+<td>2</td>
+<td>1</td>
+<td>0</td>
+<td>3</td>
+</tr>
+<tr>
+<td class="row-label">To do (m/d)</td>
+<td>-</td>
+<td>-</td>
+<td>18</td>
+<td>4</td>
+<td>5</td>
+<td>27</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="footer-bar"><span class="page-number">21</span><span class="logo">SYSTRA</span></div>
+</div>
+
+<!-- DATA NOTES SLIDE -->
+<div class="slide" data-slide-number="22" data-project-index="notes" data-project-name="Data Notes">
+<div class="top-bar"></div>
+<div class="date-box">Jun 2025</div>
+<div class="main-title" style="font-size: 36px;">Data Notes</div>
+<div style="position: absolute; top: 80px; left: 30px; width: 900px;">
+<div class="section-header"><div class="section-title">FIELDS NOT DIRECTLY MAPPED</div></div>
+<div class="section-box" style="height: 380px; overflow: hidden;">
+<div style="font-size: 11px; color: #333;">
+<p style="margin-bottom: 10px;"><strong>The following template fields had no direct data mapping and were populated with derived or default values:</strong></p>
+<ul style="margin-left: 20px; line-height: 1.6;">
+<li><strong>report_date:</strong> Set to current month (Jun 2025)</li>
+<li><strong>followup_budget_link:</strong> Placeholder link used</li>
+<li><strong>bac, actual, eac:</strong> Derived from budget_capex, budget_capex_used, budget_capex_landing</li>
+<li><strong>trend_scope, trend_schedule, trend_budget:</strong> Inferred from project risk and mood indicators</li>
+<li><strong>budget_m_d_* fields:</strong> Mapped from efforts array where team names matched</li>
+<li><strong>used_m_d_* fields:</strong> Mapped from effort_used in efforts array</li>
+<li><strong>to_do_m_d_* fields:</strong> Calculated as budget - used</li>
+</ul>
+<p style="margin-top: 15px;"><strong>Projects with limited budget data:</strong></p>
+<ul style="margin-left: 20px; line-height: 1.6;">
+<li>Management de la gestion des stocks - No budget values defined</li>
+<li>Nouveau plan de compétence - Budget values not per fiscal year</li>
+<li>Ticket restau dématérialisés - Budget values not per fiscal year</li>
+</ul>
+<p style="margin-top: 15px;"><strong>Note:</strong> All milestones shown are from the global milestones array and may include milestones from related projects within the same program.</p>
+</div>
+</div>
+</div>
+<div class="footer-bar"><span class="page-number">22</span><span class="logo">SYSTRA</span></div>
+</div>
+
+</body>
+</html>
