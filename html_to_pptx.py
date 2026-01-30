@@ -342,24 +342,33 @@ class SlideRenderer:
             t_bold = t_fw not in ('400', 'normal', '')
             _textbox(self.s, t_left, t_top, mw, fs*1.4,
                      t.text_content().strip(), size=fs*0.75, bold=t_bold, color=t_color, font=self.font)
-        # footer
-        fbs = self.el.cssselect('.footer-bar')
-        if fbs:
-            fb = fbs[0]; fb_sty = _sty(fb)
-            fb_css = _ss_get(self.ss, '.footer-bar')
+        # footer — supports two variants:
+        #   A) .footer-bar container with nested .page-number / .logo
+        #   B) .bottom-bar + standalone .page-number / .logo as siblings
+        fb_el = None
+        for cls in ('.footer-bar', '.bottom-bar'):
+            fbs = self.el.cssselect(cls)
+            if fbs:
+                fb_el = fbs[0]
+                fb_css = _ss_get(self.ss, cls)
+                break
+        if fb_el is not None:
+            fb_sty = _sty(fb_el)
             fb_h = _px(fb_sty.get('height', '') or fb_css.get('height', '32'))
             fb_bg = _bg_color(fb_sty) or _bg_color(fb_css) or _FALLBACK_GREY_CC
             fb_top = SLIDE_H_PX - fb_h
             _rect(self.s, 0, fb_top, SLIDE_W_PX, fb_h, fill=fb_bg)
-            pn = fb.cssselect('.page-number')
+            # page-number & logo: look inside footer first, then as slide children
+            pn = fb_el.cssselect('.page-number') or self.el.cssselect('.page-number')
             if pn:
                 pn_css = _ss_get(self.ss, '.page-number')
                 pn_sty = _sty(pn[0])
                 pn_color = _parse_color(pn_sty.get('color', '') or pn_css.get('color', '')) or _FALLBACK_WHITE
                 pn_fs = _px(pn_sty.get('font-size', '') or pn_css.get('font-size', '14')) * 0.75
-                _textbox(self.s, 20, fb_top, 100, fb_h,
+                pn_left = _px(pn_sty.get('left', '') or pn_css.get('left', '15'))
+                _textbox(self.s, pn_left, fb_top, 100, fb_h,
                          pn[0].text_content().strip(), size=pn_fs, color=pn_color, valign='ctr', font=self.font)
-            lg = fb.cssselect('.logo')
+            lg = fb_el.cssselect('.logo') or self.el.cssselect('.logo')
             if lg:
                 lg_css = _ss_get(self.ss, '.logo')
                 lg_sty = _sty(lg[0])
@@ -378,7 +387,7 @@ class SlideRenderer:
             if st.get('position') != 'absolute':
                 continue
             # skip things handled elsewhere
-            if div.cssselect('.footer-bar'):                          continue
+            if div.cssselect('.footer-bar') or div.cssselect('.bottom-bar'): continue
             # legend: detected by structure (absolute + bottom + colored spans), not text
             if self._is_legend_div(div):                              continue
             if div.cssselect('a.link-text') and not div.cssselect('.section-header'): continue
@@ -459,21 +468,22 @@ class SlideRenderer:
     def _section_full(self, div, st):
         self._section_chrome(div, st)
         top, left, w = _px(st.get('top','0')), _px(st.get('left','0')), _px(st.get('width','420'))
-        box = div.cssselect('.section-box')
-        if not box: return
-        box = box[0]
+        box_els = div.cssselect('.section-box')
+        # fallback: use trend-box directly, or the div itself
+        box = box_els[0] if box_els else None
         box_top = top + 20
 
         # table inside box
-        tables = box.cssselect('table')
-        if tables:
-            is_dashed = 'dashed' in (_sty(tables[0]).get('border', '') or
-                        _ss_get(self.ss, '.'+tables[0].get('class','').split()[0]+' td' if tables[0].get('class') else '').get('border', ''))
-            self._render_table(tables[0], left+2, box_top+2, w-4, dashed=is_dashed)
-            return
+        if box is not None:
+            tables = box.cssselect('table')
+            if tables:
+                is_dashed = 'dashed' in (_sty(tables[0]).get('border', '') or
+                            _ss_get(self.ss, '.'+tables[0].get('class','').split()[0]+' td' if tables[0].get('class') else '').get('border', ''))
+                self._render_table(tables[0], left+2, box_top+2, w-4, dashed=is_dashed)
+                return
 
-        # trend-box — read styles from CSS
-        trend = box.cssselect('.trend-box')
+        # trend-box — may be inside .section-box or directly under div
+        trend = (box.cssselect('.trend-box') if box is not None else []) or div.cssselect('.trend-box')
         if trend:
             ti_css = _ss_get(self.ss, '.trend-item')
             ti_fs = _px(ti_css.get('font-size', '14')) * 0.75
@@ -493,6 +503,7 @@ class SlideRenderer:
             return
 
         # recursive content
+        if box is None: return
         y = box_top + 6
         y = self._render_box_content(box, left, y, w)
 
@@ -543,6 +554,17 @@ class SlideRenderer:
                 bl_color = _parse_color(cst.get('color', '') or bl_css.get('color', '')) or _FALLBACK_BLACK33
                 _textbox(self.s, x_base, y, w_inner, 14,
                          child.text_content().strip(), size=bl_fs, bold=bl_bold, color=bl_color, font=self.font)
+                y += 14 + mb; continue
+
+            # sub-label — bold label (like "Made :", "Team Members:")
+            if 'sub-label' in cls:
+                sl_css = _ss_get(self.ss, '.sub-label')
+                sl_fs = _px(cst.get('font-size', '') or sl_css.get('font-size', '11')) * 0.75
+                sl_fw = cst.get('font-weight', '') or sl_css.get('font-weight', '700')
+                sl_bold = sl_fw not in ('400', 'normal', '')
+                sl_color = _parse_color(cst.get('color', '') or sl_css.get('color', '')) or _FALLBACK_BLACK33
+                _textbox(self.s, x_base, y, w_inner, 14,
+                         child.text_content().strip(), size=sl_fs, bold=sl_bold, color=sl_color, font=self.font)
                 y += 14 + mb; continue
 
             # bullet-item — color from stylesheet
