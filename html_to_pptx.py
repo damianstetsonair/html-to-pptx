@@ -177,7 +177,7 @@ def _render_rich(paragraph, el, pt=8, skip_blocks=False):
         elif sub.tag == 'span':
             ss = _sty(sub)
             # coloured circle indicator → render as inline ● with colour
-            bg = ss.get('background', '')
+            bg = ss.get('background', '') or ss.get('background-color', '')
             if bg and ('border-radius' in str(ss) or 'display' in ss):
                 cc = _parse_color(bg)
                 if cc:
@@ -226,8 +226,10 @@ def _render_rich(paragraph, el, pt=8, skip_blocks=False):
 def _circle_color(el) -> Optional[RGBColor]:
     for span in el.cssselect('span[style]'):
         ss = _sty(span)
-        bg = ss.get('background', '')
-        if bg: return _parse_color(bg)
+        bg = ss.get('background', '') or ss.get('background-color', '')
+        if bg:
+            c = _parse_color(bg)
+            if c: return c
         if ss.get('color') and '●' in (span.text or ''):
             return _parse_color(ss.get('color', ''))
     return None
@@ -248,38 +250,66 @@ class SlideRenderer:
 
     # ── chrome ─────────────────────────────────────────────────
     def _chrome(self):
-        # top bar
-        if self.el.cssselect('.top-bar'):
-            _rect(self.s, 0, 0, SLIDE_W_PX, 8, fill=TEAL_BAR)
-        # date box
+        # top bar — read dimensions & color from CSS class/stylesheet
+        tbs = self.el.cssselect('.top-bar')
+        if tbs:
+            tb_sty = _sty(tbs[0])
+            tb_h = _px(tb_sty.get('height', '8'))
+            tb_bg = _parse_color(tb_sty.get('background', '') or tb_sty.get('background-color', '')) or TEAL_BAR
+            _rect(self.s, 0, 0, SLIDE_W_PX, tb_h, fill=tb_bg)
+        # date box — read position, size & color from CSS
         dbs = self.el.cssselect('.date-box')
         if dbs:
-            _rect(self.s, SLIDE_W_PX-100, 8, 100, 50, fill=TEAL_BAR)
-            _textbox(self.s, SLIDE_W_PX-100, 8, 100, 50,
-                     dbs[0].text_content().strip(), size=10, bold=True,
-                     color=WHITE, align=PP_ALIGN.CENTER, valign='ctr')
-        # title
+            db_sty = _sty(dbs[0])
+            db_w = _px(db_sty.get('width', '100'))
+            db_h = _px(db_sty.get('height', '50'))
+            db_top = _px(db_sty.get('top', '8'))
+            db_right = _px(db_sty.get('right', '0'))
+            db_left = SLIDE_W_PX - db_w - db_right
+            db_bg = _parse_color(db_sty.get('background', '') or db_sty.get('background-color', '')) or TEAL_BAR
+            db_color = _parse_color(db_sty.get('color', '')) or WHITE
+            db_fs = _px(db_sty.get('font-size', '14')) * 0.75
+            db_bold = db_sty.get('font-weight', '600') not in ('400', 'normal', '')
+            _rect(self.s, db_left, db_top, db_w, db_h, fill=db_bg)
+            _textbox(self.s, db_left, db_top, db_w, db_h,
+                     dbs[0].text_content().strip(), size=db_fs, bold=db_bold,
+                     color=db_color, align=PP_ALIGN.CENTER, valign='ctr')
+        # title — read styles from CSS
         titles = self.el.cssselect('.main-title')
         if titles:
             t = titles[0]; st = _sty(t)
             fs = _px(st.get('font-size', '42'))
+            t_left = _px(st.get('left', '30'))
+            t_top = _px(st.get('top', '20'))
+            t_color = _parse_color(st.get('color', '')) or TEAL
             mw = _px(st.get('max-width', '800')) if 'max-width' in st else 800
-            _textbox(self.s, 30, 20, mw, fs*1.4,
-                     t.text_content().strip(), size=fs*0.75, bold=True, color=TEAL)
-        # footer
+            t_bold = st.get('font-weight', '700') not in ('400', 'normal', '')
+            _textbox(self.s, t_left, t_top, mw, fs*1.4,
+                     t.text_content().strip(), size=fs*0.75, bold=t_bold, color=t_color)
+        # footer — read dimensions & color from CSS
         fbs = self.el.cssselect('.footer-bar')
         if fbs:
-            fb = fbs[0]
-            _rect(self.s, 0, SLIDE_H_PX-32, SLIDE_W_PX, 32, fill=RED_BAR)
+            fb = fbs[0]; fb_sty = _sty(fb)
+            fb_h = _px(fb_sty.get('height', '32'))
+            fb_bg = _parse_color(fb_sty.get('background', '') or fb_sty.get('background-color', '')) or RED_BAR
+            fb_top = SLIDE_H_PX - fb_h
+            _rect(self.s, 0, fb_top, SLIDE_W_PX, fb_h, fill=fb_bg)
             pn = fb.cssselect('.page-number')
             if pn:
-                _textbox(self.s, 20, SLIDE_H_PX-32, 100, 32,
-                         pn[0].text_content().strip(), size=10, color=WHITE, valign='ctr')
+                pn_sty = _sty(pn[0])
+                pn_color = _parse_color(pn_sty.get('color', '')) or WHITE
+                pn_fs = _px(pn_sty.get('font-size', '14')) * 0.75
+                _textbox(self.s, 20, fb_top, 100, fb_h,
+                         pn[0].text_content().strip(), size=pn_fs, color=pn_color, valign='ctr')
             lg = fb.cssselect('.logo')
             if lg:
-                _textbox(self.s, SLIDE_W_PX-140, SLIDE_H_PX-32, 120, 32,
-                         lg[0].text_content().strip(), size=13, bold=True,
-                         color=WHITE, align=PP_ALIGN.RIGHT, valign='ctr')
+                lg_sty = _sty(lg[0])
+                lg_color = _parse_color(lg_sty.get('color', '')) or WHITE
+                lg_fs = _px(lg_sty.get('font-size', '18')) * 0.75
+                lg_bold = lg_sty.get('font-weight', '700') not in ('400', 'normal', '')
+                _textbox(self.s, SLIDE_W_PX-140, fb_top, 120, fb_h,
+                         lg[0].text_content().strip(), size=lg_fs, bold=lg_bold,
+                         color=lg_color, align=PP_ALIGN.RIGHT, valign='ctr')
 
     # ── content dispatcher ─────────────────────────────────────
     def _positioned_blocks(self):
@@ -313,15 +343,28 @@ class SlideRenderer:
     # ── section header + box outline ───────────────────────────
     def _section_chrome(self, div, st):
         top, left, w = _px(st.get('top','0')), _px(st.get('left','0')), _px(st.get('width','420'))
-        _rect(self.s, left, top, w, 1, fill=GREY_CC)
+        # header separator line
+        hdr = div.cssselect('.section-header')
+        hdr_sty = _sty(hdr[0]) if hdr else {}
+        sep_color = _parse_color(hdr_sty.get('border-top', '').split('solid')[-1].strip() if 'solid' in hdr_sty.get('border-top','') else '') or GREY_CC
+        _rect(self.s, left, top, w, 1, fill=sep_color)
+        # title text
         titles = div.cssselect('.section-title')
         if titles:
+            t_sty = _sty(titles[0])
+            t_color = _parse_color(t_sty.get('color', '')) or TEAL
+            t_fs = _px(t_sty.get('font-size', '13')) * 0.75
+            t_bold = t_sty.get('font-weight', '700') not in ('400', 'normal', '')
             _textbox(self.s, left, top+2, w, 16,
-                     titles[0].text_content().strip(), size=9, bold=True, color=TEAL)
+                     titles[0].text_content().strip(), size=t_fs, bold=t_bold, color=t_color)
+        # content box
         box = div.cssselect('.section-box')
         if box:
-            bh = _px(_sty(box[0]).get('height','80'))
-            _rect(self.s, left, top+20, w, bh, fill=WHITE, line_color=GREY_CC, line_w=Pt(0.75))
+            box_sty = _sty(box[0])
+            bh = _px(box_sty.get('height','80'))
+            box_bg = _parse_color(box_sty.get('background', '') or box_sty.get('background-color', '')) or WHITE
+            box_border = _parse_color(box_sty.get('border-color', '') or box_sty.get('border', '').split('solid')[-1].strip() if 'solid' in box_sty.get('border','') else '') or GREY_CC
+            _rect(self.s, left, top+20, w, bh, fill=box_bg, line_color=box_border, line_w=Pt(0.75))
 
     # ── full section (header + box + content) ──────────────────
     def _section_full(self, div, st):
@@ -459,35 +502,46 @@ class SlideRenderer:
         y = top + 28
 
         for child in box:
-            # progress bar container
-            progress_bg = child.cssselect('div[style]')
+            # progress bar container — walk only direct children of child
             drew_bar = False
-            for inner in progress_bg:
+            for inner in child:
+                if inner.tag != 'div': continue
                 iss = _sty(inner)
-                if iss.get('background') != '#e5e5e5': continue
+                # detect progress bar bg: has border-radius, height, and a background color
+                if 'border-radius' not in iss or 'height' not in iss: continue
+                inner_bg = _parse_color(iss.get('background', '') or iss.get('background-color', ''))
+                if not inner_bg: continue
+                # confirm bar structure: direct child div (fill) or span (label)
+                fill_children = [fd for fd in inner if fd.tag == 'div' and
+                                 _parse_color(_sty(fd).get('background', '') or _sty(fd).get('background-color', ''))]
+                has_span = any(sp.tag == 'span' for sp in inner)
+                if not fill_children and not has_span: continue
                 drew_bar = True
+                bar_h = _px(iss.get('height', '16'))
                 bar_w = w - 24
                 # bg bar
                 bg = self.s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,
-                        E(left+12), E(y), E(bar_w), E(16))
-                bg.fill.solid(); bg.fill.fore_color.rgb = GREY_E5; bg.line.fill.background()
-                # fill bar
-                for fd in inner.cssselect('div[style]'):
+                        E(left+12), E(y), E(bar_w), E(bar_h))
+                bg.fill.solid(); bg.fill.fore_color.rgb = inner_bg; bg.line.fill.background()
+                # fill bar(s)
+                for fd in fill_children:
                     fds = _sty(fd)
-                    if fds.get('background') == '#006272':
-                        pct = _pct(fds.get('width','0'))
-                        fw = bar_w * pct / 100
-                        if fw > 0:
-                            fb = self.s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,
-                                    E(left+12), E(y), E(fw), E(16))
-                            fb.fill.solid(); fb.fill.fore_color.rgb = TEAL; fb.line.fill.background()
+                    fill_color = _parse_color(fds.get('background', '') or fds.get('background-color', ''))
+                    if not fill_color: continue
+                    pct = _pct(fds.get('width','0'))
+                    fw = bar_w * pct / 100
+                    if fw > 0:
+                        fb = self.s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,
+                                E(left+12), E(y), E(fw), E(bar_h))
+                        fb.fill.solid(); fb.fill.fore_color.rgb = fill_color; fb.line.fill.background()
                 # pct label
-                for sp in inner.cssselect('span'):
+                for sp in inner:
+                    if sp.tag != 'span': continue
                     stxt = sp.text_content().strip()
                     if '%' in stxt:
-                        _textbox(self.s, left+bar_w-60, y, 72, 16,
+                        _textbox(self.s, left+bar_w-60, y, 72, bar_h,
                                  stxt, size=8, align=PP_ALIGN.RIGHT)
-                y += 24
+                y += bar_h + 8
             if drew_bar: continue
 
             # text / milestones — use recursive renderer
@@ -652,16 +706,17 @@ class SlideRenderer:
 
             bottom = _px(st.get('bottom','50'))
             lx = _px(st.get('left','30'))
+            leg_fs = _px(st.get('font-size', '11')) * 0.75
+            leg_color = _parse_color(st.get('color', '')) or GREY66
             ty = SLIDE_H_PX - bottom - 20
 
-            _textbox(self.s, lx, ty, 800, 20,
-                     txt.replace('●','').strip(), size=8, color=GREY66)
-            for c, xo in [
-                (RGBColor(0x22,0xC5,0x5E), 68),  (RGBColor(0xF5,0x9E,0x0B), 138),
-                (RGBColor(0xEF,0x44,0x44), 230),  (RGBColor(0x22,0xC5,0x5E), 370),
-                (RGBColor(0xF5,0x9E,0x0B), 425),  (RGBColor(0xEF,0x44,0x44), 505),
-            ]:
-                _oval(self.s, lx+xo, ty+3, 8, c)
+            # render legend as rich text with inline colored circles
+            tb = _textbox(self.s, lx, ty, 800, 20)
+            _render_rich(tb.text_frame.paragraphs[0], el, leg_fs)
+            # override color for all normal runs
+            for run in tb.text_frame.paragraphs[0].runs:
+                if run.font.color.rgb in (None, BLACK33):
+                    run.font.color.rgb = leg_color
 
     # ── links ──────────────────────────────────────────────────
     def _links(self):
