@@ -3,17 +3,12 @@
 HTML-to-PPTX converter.
 Converts a presentation rendered as HTML slides into a faithful python-pptx file.
 
-Slide types handled:
-  1. Summary   – standalone table + legend
-  2. Detail    – 8 section boxes (description, scope, progress, next steps,
-                 decisions, risks, trends, budget)
-  3. Budget    – budget detail table + project team + link
-  4. Planning  – progress bar, milestones list, workload table
-  5. Notes     – plain text data notes
+Fully generic: reads all colors, fonts, sizes, and positions from the HTML/CSS.
+No hardcoded theme colors — works with any HTML color scheme.
 """
 
 import re, sys
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Dict
 
 from pptx import Presentation
 from pptx.util import Pt, Emu
@@ -28,16 +23,14 @@ SLIDE_W_PX, SLIDE_H_PX = 960, 540
 SLIDE_W_IN, SLIDE_H_IN = 10.0, 5.625
 _SCALE = SLIDE_W_IN / SLIDE_W_PX  # inches per CSS pixel
 
-TEAL     = RGBColor(0x00, 0x62, 0x72)
-TEAL_BAR = RGBColor(0x7A, 0x9A, 0x9E)
-RED_BAR  = RGBColor(0xC4, 0x1E, 0x3A)
-RED_BULL = RGBColor(0xCC, 0x00, 0x00)
-WHITE    = RGBColor(0xFF, 0xFF, 0xFF)
-BLACK33  = RGBColor(0x33, 0x33, 0x33)
-GREY66   = RGBColor(0x66, 0x66, 0x66)
-GREY_CC  = RGBColor(0xCC, 0xCC, 0xCC)
-GREY_E5  = RGBColor(0xE5, 0xE5, 0xE5)
-FONT     = 'Arial'
+# Fallback defaults (used only when CSS provides nothing)
+_FALLBACK_FONT     = 'Arial'
+_FALLBACK_WHITE    = RGBColor(0xFF, 0xFF, 0xFF)
+_FALLBACK_BLACK33  = RGBColor(0x33, 0x33, 0x33)
+_FALLBACK_GREY66   = RGBColor(0x66, 0x66, 0x66)
+_FALLBACK_GREY_CC  = RGBColor(0xCC, 0xCC, 0xCC)
+_FALLBACK_TEAL     = RGBColor(0x00, 0x62, 0x72)
+_FALLBACK_RED_BULL = RGBColor(0xCC, 0x00, 0x00)
 
 # ───────────────────────── helpers ────────────────────────────
 def E(px: float) -> int:
@@ -48,27 +41,43 @@ def _parse_color(s: str) -> Optional[RGBColor]:
     if not s:
         return None
     s = s.strip().lower()
-    _MAP = {
-        '#7a9a9e': TEAL_BAR, '#006272': TEAL, '#c41e3a': RED_BAR,
-        '#c00': RED_BULL, '#333': BLACK33, '#333333': BLACK33,
-        '#666': GREY66, '#666666': GREY66, '#ccc': GREY_CC,
-        '#cccccc': GREY_CC, '#fff': WHITE, '#ffffff': WHITE,
-        '#f5f5f5': RGBColor(0xF5,0xF5,0xF5), '#f9f9f9': RGBColor(0xF9,0xF9,0xF9),
-        '#e5e5e5': GREY_E5, '#22c55e': RGBColor(0x22,0xC5,0x5E),
-        '#f59e0b': RGBColor(0xF5,0x9E,0x0B), '#ef4444': RGBColor(0xEF,0x44,0x44),
-        'white': WHITE,
-    }
-    if s in _MAP:
-        return _MAP[s]
+    # named
+    _NAMED = {'white': _FALLBACK_WHITE, 'black': RGBColor(0,0,0),
+              'red': RGBColor(0xFF,0,0), 'green': RGBColor(0,0x80,0),
+              'blue': RGBColor(0,0,0xFF), 'transparent': None}
+    if s in _NAMED:
+        return _NAMED[s]
+    # hex 6
     m = re.match(r'#([0-9a-f]{6})$', s)
     if m:
         h = m.group(1); return RGBColor(int(h[0:2],16), int(h[2:4],16), int(h[4:6],16))
+    # hex 3
     m = re.match(r'#([0-9a-f]{3})$', s)
     if m:
         h = m.group(1); return RGBColor(int(h[0]*2,16), int(h[1]*2,16), int(h[2]*2,16))
+    # rgb()
     m = re.match(r'rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)', s)
     if m:
         return RGBColor(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+    # rgba() — ignore alpha
+    m = re.match(r'rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)', s)
+    if m:
+        return RGBColor(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+    return None
+
+def _is_light(c: RGBColor) -> bool:
+    """True if colour has high luminance (light background → keep dark text)."""
+    return (0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]) > 180
+
+def _parse_border_color(border_str: str) -> Optional[RGBColor]:
+    """Extract colour from a CSS border shorthand like '1px solid #ccc'."""
+    if not border_str:
+        return None
+    # try last token
+    parts = border_str.strip().split()
+    for p in reversed(parts):
+        c = _parse_color(p)
+        if c: return c
     return None
 
 def _sty(el) -> dict:
@@ -86,8 +95,42 @@ def _px(v: str) -> float:
 def _pct(v: str) -> float:
     m = re.match(r'([\d.]+)\s*%', v.strip()); return float(m.group(1)) if m else 0
 
+# ───────────── stylesheet parser ────────────────────────────
+def _parse_stylesheet(doc) -> Dict[str, dict]:
+    """Parse <style> blocks into {selector: {prop: value}} dict.
+    Handles simple selectors: .class, tag, .class tag, .class::before, etc."""
+    ss: Dict[str, dict] = {}
+    for style_el in doc.cssselect('style'):
+        raw = style_el.text_content() or ''
+        # strip comments
+        raw = re.sub(r'/\*.*?\*/', '', raw, flags=re.DOTALL)
+        # split into rule blocks
+        for m in re.finditer(r'([^{}]+)\{([^}]*)\}', raw):
+            selectors = m.group(1).strip()
+            body = m.group(2).strip()
+            props = {}
+            for decl in body.split(';'):
+                if ':' not in decl: continue
+                k, v = decl.split(':', 1)
+                props[k.strip().lower()] = v.strip()
+            for sel in selectors.split(','):
+                ss[sel.strip()] = props
+    return ss
+
+def _ss_get(ss: dict, *selectors) -> dict:
+    """Merge stylesheet rules for the given selectors (later wins)."""
+    merged = {}
+    for sel in selectors:
+        if sel in ss:
+            merged.update(ss[sel])
+    return merged
+
+def _bg_color(sty: dict) -> Optional[RGBColor]:
+    """Extract background color from a style dict, checking both 'background' and 'background-color'."""
+    return _parse_color(sty.get('background', '') or sty.get('background-color', ''))
+
 # ───────────── XML-level table cell helpers ───────────────────
-def _cell_border(cell, color=GREY_CC, width=6350, dash='solid'):
+def _cell_border(cell, color=_FALLBACK_GREY_CC, width=6350, dash='solid'):
     tc = cell._tc; tcPr = tc.get_or_add_tcPr()
     for tag_name in ('a:lnT','a:lnB','a:lnL','a:lnR'):
         tag = qn(tag_name)
@@ -137,11 +180,10 @@ def _oval(slide, left, top, size, fill):
     s.fill.solid(); s.fill.fore_color.rgb = fill; s.line.fill.background()
     return s
 
-def _textbox(slide, left, top, w, h, text='', size=8, bold=False, color=BLACK33,
-             align=PP_ALIGN.LEFT, font=FONT, wrap=True, valign='top'):
+def _textbox(slide, left, top, w, h, text='', size=8, bold=False, color=_FALLBACK_BLACK33,
+             align=PP_ALIGN.LEFT, font=_FALLBACK_FONT, wrap=True, valign='top'):
     tb = slide.shapes.add_textbox(E(left), E(top), E(w), E(h))
     tf = tb.text_frame; tf.word_wrap = wrap; tf.auto_size = None
-    # eliminate internal insets so text isn't clipped in small boxes
     bp = tf._txBody.find(qn('a:bodyPr'))
     if bp is not None:
         bp.set('lIns', '0'); bp.set('tIns', '0')
@@ -155,17 +197,15 @@ def _textbox(slide, left, top, w, h, text='', size=8, bold=False, color=BLACK33,
         r.font.size = Pt(size); r.font.bold = bold; r.font.color.rgb = color; r.font.name = font
     return tb
 
-def _add_run(paragraph, text, size=8, bold=False, color=BLACK33, font=FONT):
+def _add_run(paragraph, text, size=8, bold=False, color=_FALLBACK_BLACK33, font=_FALLBACK_FONT):
     r = paragraph.add_run(); r.text = text
     r.font.size = Pt(size); r.font.bold = bold; r.font.color.rgb = color; r.font.name = font
     return r
 
 # ───────────── rich inline text rendering ─────────────────────
 def _render_rich(paragraph, el, pt=8, skip_blocks=False):
-    """Walk *el* children and emit runs with bold / colour.
-    If skip_blocks=True, <ul> and <div> children are ignored (only their tail is kept).
-    """
-    parts: List[Tuple] = []  # (kind, text [, color])
+    """Walk *el* children and emit runs with bold / colour."""
+    parts: List[Tuple] = []
     if el.text:
         parts.append(('n', el.text))
     for sub in el:
@@ -176,7 +216,6 @@ def _render_rich(paragraph, el, pt=8, skip_blocks=False):
             parts.append(('b', sub.text_content()))
         elif sub.tag == 'span':
             ss = _sty(sub)
-            # coloured circle indicator → render as inline ● with colour
             bg = ss.get('background', '') or ss.get('background-color', '')
             if bg and ('border-radius' in str(ss) or 'display' in ss):
                 cc = _parse_color(bg)
@@ -234,82 +273,103 @@ def _circle_color(el) -> Optional[RGBColor]:
             return _parse_color(ss.get('color', ''))
     return None
 
+# ───────────── detect progress bar structure ──────────────────
+def _has_progress_bar(box_el) -> bool:
+    """Check if a section-box contains progress bar divs (border-radius + height + bg)."""
+    for child in box_el:
+        for inner in child:
+            if not hasattr(inner, 'tag') or inner.tag != 'div': continue
+            iss = _sty(inner)
+            if 'border-radius' in iss and 'height' in iss and _bg_color(iss):
+                return True
+    return False
+
 # ═══════════════════════════════════════════════════════════════
 #  MAIN RENDERER
 # ═══════════════════════════════════════════════════════════════
 class SlideRenderer:
-    def __init__(self, pptx_slide, html_el):
+    def __init__(self, pptx_slide, html_el, ss: dict, font: str):
         self.s = pptx_slide
         self.el = html_el
+        self.ss = ss         # parsed stylesheet
+        self.font = font     # resolved font family
 
     def render(self):
-        self._chrome()           # top bar, date box, title, footer
-        self._positioned_blocks() # all absolute-positioned content
+        self._chrome()
+        self._positioned_blocks()
         self._legend()
         self._links()
 
     # ── chrome ─────────────────────────────────────────────────
     def _chrome(self):
-        # top bar — read dimensions & color from CSS class/stylesheet
+        # top bar
         tbs = self.el.cssselect('.top-bar')
         if tbs:
             tb_sty = _sty(tbs[0])
-            tb_h = _px(tb_sty.get('height', '8'))
-            tb_bg = _parse_color(tb_sty.get('background', '') or tb_sty.get('background-color', '')) or TEAL_BAR
+            tb_h = _px(tb_sty.get('height', '')) or _px(_ss_get(self.ss, '.top-bar').get('height', '8'))
+            tb_bg = _bg_color(tb_sty) or _bg_color(_ss_get(self.ss, '.top-bar')) or _FALLBACK_GREY_CC
             _rect(self.s, 0, 0, SLIDE_W_PX, tb_h, fill=tb_bg)
-        # date box — read position, size & color from CSS
+        # date box
         dbs = self.el.cssselect('.date-box')
         if dbs:
+            db_css = _ss_get(self.ss, '.date-box')
             db_sty = _sty(dbs[0])
-            db_w = _px(db_sty.get('width', '100'))
-            db_h = _px(db_sty.get('height', '50'))
-            db_top = _px(db_sty.get('top', '8'))
-            db_right = _px(db_sty.get('right', '0'))
+            db_w = _px(db_sty.get('width', '') or db_css.get('width', '100'))
+            db_h = _px(db_sty.get('height', '') or db_css.get('height', '50'))
+            db_top = _px(db_sty.get('top', '') or db_css.get('top', '8'))
+            db_right = _px(db_sty.get('right', '') or db_css.get('right', '0'))
             db_left = SLIDE_W_PX - db_w - db_right
-            db_bg = _parse_color(db_sty.get('background', '') or db_sty.get('background-color', '')) or TEAL_BAR
-            db_color = _parse_color(db_sty.get('color', '')) or WHITE
-            db_fs = _px(db_sty.get('font-size', '14')) * 0.75
-            db_bold = db_sty.get('font-weight', '600') not in ('400', 'normal', '')
+            db_bg = _bg_color(db_sty) or _bg_color(db_css) or _FALLBACK_GREY_CC
+            db_color = _parse_color(db_sty.get('color', '') or db_css.get('color', '')) or _FALLBACK_WHITE
+            db_fs = _px(db_sty.get('font-size', '') or db_css.get('font-size', '14')) * 0.75
+            db_fw = db_sty.get('font-weight', '') or db_css.get('font-weight', '600')
+            db_bold = db_fw not in ('400', 'normal', '')
             _rect(self.s, db_left, db_top, db_w, db_h, fill=db_bg)
             _textbox(self.s, db_left, db_top, db_w, db_h,
                      dbs[0].text_content().strip(), size=db_fs, bold=db_bold,
-                     color=db_color, align=PP_ALIGN.CENTER, valign='ctr')
-        # title — read styles from CSS
+                     color=db_color, align=PP_ALIGN.CENTER, valign='ctr', font=self.font)
+        # title
         titles = self.el.cssselect('.main-title')
         if titles:
             t = titles[0]; st = _sty(t)
-            fs = _px(st.get('font-size', '42'))
-            t_left = _px(st.get('left', '30'))
-            t_top = _px(st.get('top', '20'))
-            t_color = _parse_color(st.get('color', '')) or TEAL
+            t_css = _ss_get(self.ss, '.main-title')
+            fs = _px(st.get('font-size', '') or t_css.get('font-size', '42'))
+            t_left = _px(st.get('left', '') or t_css.get('left', '30'))
+            t_top = _px(st.get('top', '') or t_css.get('top', '20'))
+            t_color = _parse_color(st.get('color', '') or t_css.get('color', '')) or _FALLBACK_TEAL
             mw = _px(st.get('max-width', '800')) if 'max-width' in st else 800
-            t_bold = st.get('font-weight', '700') not in ('400', 'normal', '')
+            t_fw = st.get('font-weight', '') or t_css.get('font-weight', '700')
+            t_bold = t_fw not in ('400', 'normal', '')
             _textbox(self.s, t_left, t_top, mw, fs*1.4,
-                     t.text_content().strip(), size=fs*0.75, bold=t_bold, color=t_color)
-        # footer — read dimensions & color from CSS
+                     t.text_content().strip(), size=fs*0.75, bold=t_bold, color=t_color, font=self.font)
+        # footer
         fbs = self.el.cssselect('.footer-bar')
         if fbs:
             fb = fbs[0]; fb_sty = _sty(fb)
-            fb_h = _px(fb_sty.get('height', '32'))
-            fb_bg = _parse_color(fb_sty.get('background', '') or fb_sty.get('background-color', '')) or RED_BAR
+            fb_css = _ss_get(self.ss, '.footer-bar')
+            fb_h = _px(fb_sty.get('height', '') or fb_css.get('height', '32'))
+            fb_bg = _bg_color(fb_sty) or _bg_color(fb_css) or _FALLBACK_GREY_CC
             fb_top = SLIDE_H_PX - fb_h
             _rect(self.s, 0, fb_top, SLIDE_W_PX, fb_h, fill=fb_bg)
             pn = fb.cssselect('.page-number')
             if pn:
+                pn_css = _ss_get(self.ss, '.page-number')
                 pn_sty = _sty(pn[0])
-                pn_color = _parse_color(pn_sty.get('color', '')) or WHITE
-                pn_fs = _px(pn_sty.get('font-size', '14')) * 0.75
+                pn_color = _parse_color(pn_sty.get('color', '') or pn_css.get('color', '')) or _FALLBACK_WHITE
+                pn_fs = _px(pn_sty.get('font-size', '') or pn_css.get('font-size', '14')) * 0.75
                 _textbox(self.s, 20, fb_top, 100, fb_h,
-                         pn[0].text_content().strip(), size=pn_fs, color=pn_color, valign='ctr')
+                         pn[0].text_content().strip(), size=pn_fs, color=pn_color, valign='ctr', font=self.font)
             lg = fb.cssselect('.logo')
             if lg:
+                lg_css = _ss_get(self.ss, '.logo')
                 lg_sty = _sty(lg[0])
-                lg_color = _parse_color(lg_sty.get('color', '')) or WHITE
-                lg_fs = _px(lg_sty.get('font-size', '18')) * 0.75
-                lg_bold = lg_sty.get('font-weight', '700') not in ('400', 'normal', '')
+                lg_color = _parse_color(lg_sty.get('color', '') or lg_css.get('color', '')) or _FALLBACK_WHITE
+                lg_fs = _px(lg_sty.get('font-size', '') or lg_css.get('font-size', '18')) * 0.75
+                lg_fw = lg_sty.get('font-weight', '') or lg_css.get('font-weight', '700')
+                lg_bold = lg_fw not in ('400', 'normal', '')
                 _textbox(self.s, SLIDE_W_PX-140, fb_top, 120, fb_h,
                          lg[0].text_content().strip(), size=lg_fs, bold=lg_bold,
-                         color=lg_color, align=PP_ALIGN.RIGHT, valign='ctr')
+                         color=lg_color, align=PP_ALIGN.RIGHT, valign='ctr', font=self.font)
 
     # ── content dispatcher ─────────────────────────────────────
     def _positioned_blocks(self):
@@ -319,51 +379,80 @@ class SlideRenderer:
                 continue
             # skip things handled elsewhere
             if div.cssselect('.footer-bar'):                          continue
-            if 'Legend' in div.text_content() and div.cssselect('strong'): continue
+            # legend: detected by structure (absolute + bottom + colored spans), not text
+            if self._is_legend_div(div):                              continue
             if div.cssselect('a.link-text') and not div.cssselect('.section-header'): continue
 
             has_section = bool(div.cssselect('.section-header'))
             has_table   = bool(div.cssselect('table'))
 
             if has_section:
-                sec_name = ''
-                t = div.cssselect('.section-title')
-                if t: sec_name = t[0].text_content().strip()
-                if sec_name == 'PLANNING':
+                # structural dispatch: check what's inside the section-box
+                box_els = div.cssselect('.section-box')
+                box = box_els[0] if box_els else None
+
+                if box is not None and _has_progress_bar(box):
+                    # planning-type section with progress bar
                     self._section_chrome(div, st)
                     self._planning(div, st)
-                elif sec_name == 'TEAM WORKLOAD IN M/D':
+                elif box is not None and box.cssselect('table'):
+                    # section with table inside (workload, budget detail, etc.)
                     self._section_chrome(div, st)
-                    self._workload_table(div, st)
+                    tbl_el = box.cssselect('table')[0]
+                    is_dashed = 'dashed' in (_ss_get(self.ss,
+                        '.'+tbl_el.get('class','').split()[0] if tbl_el.get('class') else '',
+                        '.'+tbl_el.get('class','').split()[0]+' td' if tbl_el.get('class') else ''
+                    ).get('border', ''))
+                    self._render_table(tbl_el, _px(st.get('left','0')),
+                                       _px(st.get('top','0'))+20, _px(st.get('width','420')),
+                                       dashed=is_dashed)
                 else:
                     self._section_full(div, st)
             elif has_table:
                 self._standalone_table(div, st)
 
+    def _is_legend_div(self, div) -> bool:
+        """Detect legend div by structure: absolute + bottom + contains colored circle spans."""
+        st = _sty(div)
+        if 'bottom' not in st: return False
+        if div.cssselect('.section-header'): return False
+        # has colored circle spans?
+        for span in div.cssselect('span[style]'):
+            ss = _sty(span)
+            bg = ss.get('background', '') or ss.get('background-color', '')
+            if bg and 'border-radius' in str(ss):
+                return True
+            if ss.get('color') and '●' in (span.text or ''):
+                return True
+        return False
+
     # ── section header + box outline ───────────────────────────
     def _section_chrome(self, div, st):
         top, left, w = _px(st.get('top','0')), _px(st.get('left','0')), _px(st.get('width','420'))
-        # header separator line
         hdr = div.cssselect('.section-header')
         hdr_sty = _sty(hdr[0]) if hdr else {}
-        sep_color = _parse_color(hdr_sty.get('border-top', '').split('solid')[-1].strip() if 'solid' in hdr_sty.get('border-top','') else '') or GREY_CC
+        hdr_css = _ss_get(self.ss, '.section-header')
+        sep_color = _parse_border_color(hdr_sty.get('border-top', '') or hdr_css.get('border-top', '')) or _FALLBACK_GREY_CC
         _rect(self.s, left, top, w, 1, fill=sep_color)
-        # title text
+        # title
         titles = div.cssselect('.section-title')
         if titles:
             t_sty = _sty(titles[0])
-            t_color = _parse_color(t_sty.get('color', '')) or TEAL
-            t_fs = _px(t_sty.get('font-size', '13')) * 0.75
-            t_bold = t_sty.get('font-weight', '700') not in ('400', 'normal', '')
+            t_css = _ss_get(self.ss, '.section-title')
+            t_color = _parse_color(t_sty.get('color', '') or t_css.get('color', '')) or _FALLBACK_TEAL
+            t_fs = _px(t_sty.get('font-size', '') or t_css.get('font-size', '13')) * 0.75
+            t_fw = t_sty.get('font-weight', '') or t_css.get('font-weight', '700')
+            t_bold = t_fw not in ('400', 'normal', '')
             _textbox(self.s, left, top+2, w, 16,
-                     titles[0].text_content().strip(), size=t_fs, bold=t_bold, color=t_color)
-        # content box
+                     titles[0].text_content().strip(), size=t_fs, bold=t_bold, color=t_color, font=self.font)
+        # box
         box = div.cssselect('.section-box')
         if box:
             box_sty = _sty(box[0])
-            bh = _px(box_sty.get('height','80'))
-            box_bg = _parse_color(box_sty.get('background', '') or box_sty.get('background-color', '')) or WHITE
-            box_border = _parse_color(box_sty.get('border-color', '') or box_sty.get('border', '').split('solid')[-1].strip() if 'solid' in box_sty.get('border','') else '') or GREY_CC
+            box_css = _ss_get(self.ss, '.section-box')
+            bh = _px(box_sty.get('height', '') or box_css.get('height', '80'))
+            box_bg = _bg_color(box_sty) or _bg_color(box_css) or _FALLBACK_WHITE
+            box_border = _parse_border_color(box_sty.get('border', '') or box_css.get('border', '')) or _FALLBACK_GREY_CC
             _rect(self.s, left, top+20, w, bh, fill=box_bg, line_color=box_border, line_w=Pt(0.75))
 
     # ── full section (header + box + content) ──────────────────
@@ -373,27 +462,37 @@ class SlideRenderer:
         box = div.cssselect('.section-box')
         if not box: return
         box = box[0]
-        bh = _px(_sty(box).get('height','80'))
         box_top = top + 20
 
-        # if box contains a table → render table, done
+        # table inside box
         tables = box.cssselect('table')
         if tables:
-            self._render_table(tables[0], left+2, box_top+2, w-4,
-                               dashed='workload' in (tables[0].get('class','') or ''))
+            is_dashed = 'dashed' in (_sty(tables[0]).get('border', '') or
+                        _ss_get(self.ss, '.'+tables[0].get('class','').split()[0]+' td' if tables[0].get('class') else '').get('border', ''))
+            self._render_table(tables[0], left+2, box_top+2, w-4, dashed=is_dashed)
             return
 
-        # trend-box
+        # trend-box — read styles from CSS
         trend = box.cssselect('.trend-box')
         if trend:
+            ti_css = _ss_get(self.ss, '.trend-item')
+            ti_fs = _px(ti_css.get('font-size', '14')) * 0.75
+            ti_fw = ti_css.get('font-weight', '600')
+            ti_bold = ti_fw not in ('400', 'normal', '')
+            ti_color = _parse_color(ti_css.get('color', '')) or _FALLBACK_BLACK33
+            ti_gap = _px(_ss_get(self.ss, '.trend-box').get('gap', '30'))
             x = left + 8
             for item in trend[0].cssselect('.trend-item'):
+                item_sty = _sty(item)
+                item_color = _parse_color(item_sty.get('color', '')) or ti_color
+                item_fs = _px(item_sty.get('font-size', '')) * 0.75 if item_sty.get('font-size') else ti_fs
                 _textbox(self.s, x, box_top+10, 80, 20,
-                         item.text_content().strip(), size=10, bold=True)
-                x += 100
+                         item.text_content().strip(), size=item_fs, bold=ti_bold,
+                         color=item_color, font=self.font)
+                x += 80 + ti_gap
             return
 
-        # render content recursively
+        # recursive content
         y = box_top + 6
         y = self._render_box_content(box, left, y, w)
 
@@ -401,12 +500,19 @@ class SlideRenderer:
     _INLINE_TAGS = {'strong', 'b', 'em', 'i', 'span', 'a', 'br', 'sub', 'sup'}
 
     def _render_box_content(self, parent, left, y, w, indent=0, fs_pt=8):
-        """Walk *parent* children and render blocks: div, p, ul/li, etc.
-        Inline tags (strong, span, etc.) are skipped — they are handled by _render_rich.
-        Respects margin-top, margin-bottom, margin-left, line-height from CSS."""
         x_base = left + 8 + indent
         w_inner = w - 16 - indent
-        LINE_H = 13  # default line height in px
+        LINE_H = 13
+
+        # resolve bullet-item::before color from stylesheet
+        bi_before = _ss_get(self.ss, '.bullet-item::before')
+        bullet_color = _parse_color(bi_before.get('color', '')) or _FALLBACK_RED_BULL
+        bullet_char = bi_before.get('content', '').strip('"\'').replace('\\25aa', '▪').replace('\\2022', '•') or '▪'
+        # if content is a unicode codepoint like "\25AA"
+        if bullet_char.startswith('\\') and len(bullet_char) <= 5:
+            try: bullet_char = chr(int(bullet_char[1:], 16))
+            except: pass
+        bullet_fs = _px(bi_before.get('font-size', '10')) * 0.75
 
         for child in parent:
             if child.tag in self._INLINE_TAGS:
@@ -415,38 +521,42 @@ class SlideRenderer:
             cls = child.get('class', '') or ''
             cst = _sty(child)
 
-            # read CSS margins
             mt = _px(cst.get('margin-top', '0'))
             mb = _px(cst.get('margin-bottom', '0'))
             y += mt
 
-            # line-height → per-line spacing (1.6 → 13*1.6 ≈ 21)
             lh_str = cst.get('line-height', '')
             lh = LINE_H
             if lh_str:
                 lh_val = _px(lh_str)
-                if lh_val > 0 and lh_val < 5:  # unitless multiplier like 1.6
+                if lh_val > 0 and lh_val < 5:
                     lh = int(LINE_H * lh_val)
-                elif lh_val >= 5:               # px value
+                elif lh_val >= 5:
                     lh = int(lh_val)
 
-            # budget-label
+            # budget-label — styles from CSS
             if 'budget-label' in cls:
+                bl_css = _ss_get(self.ss, '.budget-label')
+                bl_fs = _px(cst.get('font-size', '') or bl_css.get('font-size', '12')) * 0.75
+                bl_fw = cst.get('font-weight', '') or bl_css.get('font-weight', '700')
+                bl_bold = bl_fw not in ('400', 'normal', '')
+                bl_color = _parse_color(cst.get('color', '') or bl_css.get('color', '')) or _FALLBACK_BLACK33
                 _textbox(self.s, x_base, y, w_inner, 14,
-                         child.text_content().strip(), size=9, bold=True)
+                         child.text_content().strip(), size=bl_fs, bold=bl_bold, color=bl_color, font=self.font)
                 y += 14 + mb; continue
 
-            # bullet-item
+            # bullet-item — color from stylesheet
             if 'bullet-item' in cls:
-                fs_css = _px(cst.get('font-size','11')) if 'font-size' in cst else 11
+                bi_css = _ss_get(self.ss, '.bullet-item')
+                fs_css = _px(cst.get('font-size', '') or bi_css.get('font-size', '11'))
                 fpt = fs_css * 0.75
-                item_mb = _px(cst.get('margin-bottom', '4'))
-                _textbox(self.s, x_base, y, 10, 12, '▪', size=7, color=RED_BULL)
-                tb = _textbox(self.s, x_base+12, y, w_inner-12, 14)
+                item_mb = _px(cst.get('margin-bottom', '') or bi_css.get('margin-bottom', '4'))
+                _textbox(self.s, x_base, y, 10, 12, bullet_char, size=bullet_fs, color=bullet_color, font=self.font)
+                tb = _textbox(self.s, x_base+12, y, w_inner-12, 14, font=self.font)
                 _render_rich(tb.text_frame.paragraphs[0], child, fpt)
                 y += max(14, int(fpt*1.8)) + item_mb; continue
 
-            # <ul> → render each <li> with bullet, respecting margin-left
+            # <ul>
             if tag == 'ul':
                 ul_margin = _px(cst.get('margin-left', '0'))
                 li_x = x_base + ul_margin
@@ -455,24 +565,26 @@ class SlideRenderer:
                     if li.tag != 'li': continue
                     txt = li.text_content().strip()
                     if not txt: continue
-                    _textbox(self.s, li_x, y, 10, lh, '\u2022', size=8, color=BLACK33)
-                    tb = _textbox(self.s, li_x+12, y, li_w-12, lh)
+                    li_sty = _sty(li)
+                    li_color = _parse_color(li_sty.get('color', '')) or _FALLBACK_BLACK33
+                    _textbox(self.s, li_x, y, 10, lh, '\u2022', size=8, color=li_color, font=self.font)
+                    tb = _textbox(self.s, li_x+12, y, li_w-12, lh, font=self.font)
                     _render_rich(tb.text_frame.paragraphs[0], li, fs_pt)
                     y += lh
                 y += mb
                 continue
 
-            # <p> → render with rich text
+            # <p>
             if tag == 'p':
                 txt = child.text_content().strip()
                 if txt:
-                    tb = _textbox(self.s, x_base, y, w_inner, 14)
+                    tb = _textbox(self.s, x_base, y, w_inner, 14, font=self.font)
                     _render_rich(tb.text_frame.paragraphs[0], child, fs_pt)
                     y += 14
                 y += mb
                 continue
 
-            # <div> with children → recurse into it
+            # <div>
             if tag == 'div':
                 has_blocks = any(c.tag in ('p', 'ul', 'div', 'table') for c in child)
                 if has_blocks:
@@ -485,7 +597,7 @@ class SlideRenderer:
                 else:
                     txt = child.text_content().strip()
                     if txt:
-                        tb = _textbox(self.s, x_base, y, w_inner, 14)
+                        tb = _textbox(self.s, x_base, y, w_inner, 14, font=self.font)
                         _render_rich(tb.text_frame.paragraphs[0], child, fs_pt)
                         y += 14
                 y += mb
@@ -502,31 +614,26 @@ class SlideRenderer:
         y = top + 28
 
         for child in box:
-            # progress bar container — walk only direct children of child
+            # progress bar container
             drew_bar = False
             for inner in child:
-                if inner.tag != 'div': continue
+                if not hasattr(inner, 'tag') or inner.tag != 'div': continue
                 iss = _sty(inner)
-                # detect progress bar bg: has border-radius, height, and a background color
                 if 'border-radius' not in iss or 'height' not in iss: continue
-                inner_bg = _parse_color(iss.get('background', '') or iss.get('background-color', ''))
+                inner_bg = _bg_color(iss)
                 if not inner_bg: continue
-                # confirm bar structure: direct child div (fill) or span (label)
-                fill_children = [fd for fd in inner if fd.tag == 'div' and
-                                 _parse_color(_sty(fd).get('background', '') or _sty(fd).get('background-color', ''))]
+                fill_children = [fd for fd in inner if fd.tag == 'div' and _bg_color(_sty(fd))]
                 has_span = any(sp.tag == 'span' for sp in inner)
                 if not fill_children and not has_span: continue
                 drew_bar = True
                 bar_h = _px(iss.get('height', '16'))
                 bar_w = w - 24
-                # bg bar
                 bg = self.s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,
                         E(left+12), E(y), E(bar_w), E(bar_h))
                 bg.fill.solid(); bg.fill.fore_color.rgb = inner_bg; bg.line.fill.background()
-                # fill bar(s)
                 for fd in fill_children:
                     fds = _sty(fd)
-                    fill_color = _parse_color(fds.get('background', '') or fds.get('background-color', ''))
+                    fill_color = _bg_color(fds)
                     if not fill_color: continue
                     pct = _pct(fds.get('width','0'))
                     fw = bar_w * pct / 100
@@ -539,42 +646,28 @@ class SlideRenderer:
                     if sp.tag != 'span': continue
                     stxt = sp.text_content().strip()
                     if '%' in stxt:
+                        sp_sty = _sty(sp)
+                        sp_fs = _px(sp_sty.get('font-size', '11')) * 0.75 if sp_sty.get('font-size') else 8
+                        sp_color = _parse_color(sp_sty.get('color', '')) or _FALLBACK_BLACK33
                         _textbox(self.s, left+bar_w-60, y, 72, bar_h,
-                                 stxt, size=8, align=PP_ALIGN.RIGHT)
+                                 stxt, size=sp_fs, color=sp_color, align=PP_ALIGN.RIGHT, font=self.font)
                 y += bar_h + 8
             if drew_bar: continue
 
-            # text / milestones — use recursive renderer
+            # text / milestones
             txt = child.text_content().strip()
             if not txt or child.tag != 'div': continue
 
-            # check if child has block sub-elements
             has_blocks = any(c.tag in ('p', 'ul', 'div', 'table') for c in child)
             if has_blocks:
-                # render direct inline text first (e.g. <strong>Key Milestones:</strong>)
-                tb = _textbox(self.s, left+12, y, w-24, 14)
+                tb = _textbox(self.s, left+12, y, w-24, 14, font=self.font)
                 _render_rich(tb.text_frame.paragraphs[0], child, 8, skip_blocks=True)
                 y += 16
-                # then render block children
                 y = self._render_box_content(child, left, y, w, indent=12, fs_pt=8)
             else:
-                tb = _textbox(self.s, left+12, y, w-24, 14)
+                tb = _textbox(self.s, left+12, y, w-24, 14, font=self.font)
                 _render_rich(tb.text_frame.paragraphs[0], child, 8)
                 y += 16
-
-    # ── workload table in its own container ────────────────────
-    def _workload_table(self, div, st):
-        top, left, w = _px(st.get('top','0')), _px(st.get('left','0')), _px(st.get('width','900'))
-        # table is inside a nested div under the section-box OR directly in a sibling div
-        box = div.cssselect('.section-box')
-        tables = div.cssselect('table')
-        if not tables:
-            # try sibling container (border div wrapping table)
-            for ch in div:
-                tables = ch.cssselect('table') if hasattr(ch, 'cssselect') else []
-                if tables: break
-        if not tables: return
-        self._render_table(tables[0], left, top+20, w, dashed=True)
 
     # ── standalone table (summary slide) ───────────────────────
     def _standalone_table(self, div, st):
@@ -591,11 +684,12 @@ class SlideRenderer:
         n_rows = len(trs)
         if not n_cols or not n_rows: return
 
-        # ── table-level font-size ──
         tbl_sty = _sty(table_el)
         tbl_fs_px = _px(tbl_sty.get('font-size', '11'))
+        # table-level border color
+        tbl_border_color = _parse_border_color(tbl_sty.get('border', '')) or _FALLBACK_GREY_CC
 
-        # ── resolve column widths from first row ──
+        # resolve column widths
         first_cells = trs[0].cssselect('th, td')
         explicit_w = []
         for c in first_cells:
@@ -607,8 +701,22 @@ class SlideRenderer:
         auto_w = remaining / max(n_auto, 1) if n_auto else 0
         col_widths = [w if w > 0 else auto_w for w in explicit_w]
 
-        # ── detect if this is a workload-class table ──
-        is_workload = 'workload' in (table_el.get('class', '') or '')
+        # detect workload class for stylesheet-based defaults
+        tbl_class = table_el.get('class', '') or ''
+        is_workload = 'workload' in tbl_class
+        tbl_cls_prefix = '.'+tbl_class.split()[0] if tbl_class.strip() else ''
+
+        # resolve class-based styles for th and td
+        th_css = _ss_get(self.ss, tbl_cls_prefix+' th') if tbl_cls_prefix else {}
+        td_css = _ss_get(self.ss, tbl_cls_prefix+' td') if tbl_cls_prefix else {}
+        # detect dashed from CSS if not explicitly passed
+        if not dashed and td_css:
+            dashed = 'dashed' in td_css.get('border', '')
+        if not dashed and th_css:
+            dashed = 'dashed' in th_css.get('border', '')
+
+        # cell border color from CSS
+        cell_border_css = _parse_border_color(td_css.get('border', '') or th_css.get('border', '')) or tbl_border_color
 
         row_h = 22
         shape = self.s.shapes.add_table(n_rows, n_cols,
@@ -616,7 +724,6 @@ class SlideRenderer:
         tbl = shape.table
         _nuke_table_theme(shape)
 
-        # apply column widths
         for ci, cw in enumerate(col_widths):
             if ci < n_cols:
                 tbl.columns[ci].width = E(cw)
@@ -632,94 +739,90 @@ class SlideRenderer:
                 ds = _sty(td)
                 cls = td.get('class', '') or ''
 
-                # detect circle indicator
+                # resolve class-based styles
+                cls_css = {}
+                if cls:
+                    for c in cls.split():
+                        cls_css.update(_ss_get(self.ss, '.'+c))
+
                 txt = td.text_content().strip()
                 cc = _circle_color(td)
                 if cc: txt = '●'
 
-                # cell font-size
-                cell_fs = _px(ds.get('font-size', '0'))
-                fs_pt = (cell_fs if cell_fs > 0 else tbl_fs_px) * 0.75
+                # font-size: inline > class > table-class > table
+                cell_fs = _px(ds.get('font-size', '')) or _px(cls_css.get('font-size', '')) or \
+                          _px((th_css if td.tag == 'th' else td_css).get('font-size', '')) or tbl_fs_px
+                fs_pt = cell_fs * 0.75
                 if fs_pt < 6: fs_pt = 8
 
-                # text alignment — inline style, then class-based
-                align = ds.get('text-align', '')
-                if not align:
-                    if 'row-label' in cls:
-                        align = 'left'
-                    elif is_workload:
-                        align = 'center'
-                    else:
-                        align = 'left'
+                # text-align: inline > class > table-class
+                align = ds.get('text-align', '') or cls_css.get('text-align', '') or \
+                        (th_css if td.tag == 'th' else td_css).get('text-align', '') or 'left'
 
-                # font-weight — inline or class-based
-                fw = ds.get('font-weight', '')
-                if not fw and is_workload:
-                    fw = '400'  # workload tables default normal weight
+                # font-weight: inline > class > table-class
+                fw = ds.get('font-weight', '') or cls_css.get('font-weight', '') or \
+                     (th_css if td.tag == 'th' else td_css).get('font-weight', '')
 
                 tf = cell.text_frame; tf.clear()
                 p = tf.paragraphs[0]
                 p.space_before = Pt(0); p.space_after = Pt(0)
                 p.alignment = {'center': PP_ALIGN.CENTER, 'right': PP_ALIGN.RIGHT}.get(align, PP_ALIGN.LEFT)
 
-                r = p.add_run(); r.font.name = FONT
+                r = p.add_run(); r.font.name = self.font
                 if cc:
                     r.text = '●'; r.font.size = Pt(10); r.font.color.rgb = cc
                 else:
                     r.text = txt; r.font.size = Pt(fs_pt)
-                    # cell color: inline > tr color > default
-                    cell_color = _parse_color(ds.get('color', ''))
-                    r.font.color.rgb = cell_color or tr_color or BLACK33
+                    cell_color = _parse_color(ds.get('color', '')) or _parse_color(cls_css.get('color', '')) or tr_color or _FALLBACK_BLACK33
+                    r.font.color.rgb = cell_color
 
-                # bold: explicit font-weight or th with dark bg
+                # bold
                 if fw:
                     r.font.bold = fw not in ('400', 'normal')
                 elif td.tag == 'th':
-                    r.font.bold = True  # default for th
+                    r.font.bold = True
 
                 # fills
-                cell_bg = _parse_color(ds.get('background', ''))
+                cell_bg = _bg_color(ds) or _bg_color(cls_css)
                 if td.tag == 'th':
                     bg = cell_bg or tr_bg
                     if bg:
                         _cell_fill(cell, bg)
-                        # only force white text on dark backgrounds
-                        if bg not in (WHITE, RGBColor(0xF5,0xF5,0xF5), RGBColor(0xF9,0xF9,0xF9)):
-                            r.font.color.rgb = WHITE
+                        if not _is_light(bg):
+                            r.font.color.rgb = _FALLBACK_WHITE
                 elif tr_bg:
                     _cell_fill(cell, tr_bg)
                 elif cell_bg:
                     _cell_fill(cell, cell_bg)
 
                 # borders
-                _cell_border(cell, GREY_CC, 6350, 'dashed' if dashed else 'solid')
+                _cell_border(cell, cell_border_css, 6350, 'dashed' if dashed else 'solid')
                 cell.margin_left = E(4); cell.margin_right = E(4)
                 cell.margin_top  = E(2); cell.margin_bottom = E(2)
 
     # ── legend (summary slide) ─────────────────────────────────
     def _legend(self):
         for el in self.el.cssselect('div[style]'):
+            if not self._is_legend_div(el): continue
             st = _sty(el)
-            if st.get('position') != 'absolute' or 'bottom' not in st: continue
-            txt = el.text_content().strip()
-            if 'Legend' not in txt or el.cssselect('.section-header'): continue
-
             bottom = _px(st.get('bottom','50'))
             lx = _px(st.get('left','30'))
             leg_fs = _px(st.get('font-size', '11')) * 0.75
-            leg_color = _parse_color(st.get('color', '')) or GREY66
+            leg_color = _parse_color(st.get('color', '')) or _FALLBACK_GREY66
             ty = SLIDE_H_PX - bottom - 20
 
-            # render legend as rich text with inline colored circles
-            tb = _textbox(self.s, lx, ty, 800, 20)
+            tb = _textbox(self.s, lx, ty, 800, 20, font=self.font)
             _render_rich(tb.text_frame.paragraphs[0], el, leg_fs)
-            # override color for all normal runs
             for run in tb.text_frame.paragraphs[0].runs:
-                if run.font.color.rgb in (None, BLACK33):
+                if run.font.color.rgb in (None, _FALLBACK_BLACK33):
                     run.font.color.rgb = leg_color
 
     # ── links ──────────────────────────────────────────────────
     def _links(self):
+        link_css = _ss_get(self.ss, '.link-text')
+        link_color = _parse_color(link_css.get('color', '')) or _FALLBACK_TEAL
+        link_fs = _px(link_css.get('font-size', '12')) * 0.75
+
         for el in self.el.cssselect('div[style]'):
             st = _sty(el)
             if st.get('position') != 'absolute': continue
@@ -729,16 +832,39 @@ class SlideRenderer:
             lx = _px(st.get('left','30'))
             ty = SLIDE_H_PX - bottom - 15
             for a in links:
+                a_sty = _sty(a)
+                a_color = _parse_color(a_sty.get('color', '')) or link_color
+                a_fs = _px(a_sty.get('font-size', '')) * 0.75 if a_sty.get('font-size') else link_fs
                 tb = _textbox(self.s, lx, ty, 300, 15,
-                              a.text_content().strip(), size=9, color=TEAL)
+                              a.text_content().strip(), size=a_fs, color=a_color, font=self.font)
                 tb.text_frame.paragraphs[0].runs[0].font.underline = True
 
 # ═══════════════════════════════════════════════════════════════
 #  MAIN
 # ═══════════════════════════════════════════════════════════════
+def _resolve_font(ss: dict) -> str:
+    """Extract font-family from body or .slide stylesheet rules."""
+    for sel in ('body', '.slide'):
+        ff = ss.get(sel, {}).get('font-family', '')
+        if ff:
+            # take first family, strip quotes
+            first = ff.split(',')[0].strip().strip("'\"")
+            if first and first != '-apple-system':
+                return first
+            # try second
+            parts = [p.strip().strip("'\"") for p in ff.split(',')]
+            for p in parts:
+                if p and p not in ('-apple-system', 'BlinkMacSystemFont'):
+                    return p
+    return _FALLBACK_FONT
+
 def convert(html_path: str, output_path: str):
     with open(html_path, 'r', encoding='utf-8') as f:
         doc = lxml_html.fromstring(f.read())
+
+    ss = _parse_stylesheet(doc)
+    font = _resolve_font(ss)
+
     slide_els = doc.cssselect('div.slide')
     if not slide_els:
         print("No slides found."); return
@@ -750,7 +876,7 @@ def convert(html_path: str, output_path: str):
 
     for i, el in enumerate(slide_els):
         sl = prs.slides.add_slide(blank)
-        SlideRenderer(sl, el).render()
+        SlideRenderer(sl, el, ss, font).render()
         print(f'  [{i+1}/{len(slide_els)}] rendered')
 
     prs.save(output_path)
